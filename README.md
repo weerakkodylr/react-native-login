@@ -1,6 +1,7 @@
 # react-native-login
 User authentication screen for `React Native` using `React-Redux` and `Firebase` (For Android only).
-
+Also used the `react-native-navigation` as the native navigator plguin.
+ 
 # How to run
 
 - You need to have Android Studio and a virtual device setup and ready to use.
@@ -8,7 +9,7 @@ Please refer https://facebook.github.io/react-native/docs/getting-started.html f
 
 - After creating a branch or taking a local copy, Please run the following command to link additionaly added native libraries.  
 ```sh
-react-native link"
+react-native link
 ```
 
 - After that, open up the the Android Studio amd then load the Android peoject inside the main project folder.
@@ -21,7 +22,7 @@ Now you first run the android emulator and then run the following command.
 - Run the app in your mobile 
 If you want to test it in an actual device, please run the follwoing command after connecting the mobile to the machine.
 ```sh
-"npm run device"
+npm run device
 ```
 Please check here for more details on how to connect an actual device.
 https://facebook.github.io/react-native/docs/running-on-device.html
