@@ -1,5 +1,5 @@
 # react-native-login
-User authentication screen for react-native using react-redux and firebase
+User authentication screen for `React Native` using `React-Redux` and `Firebase` (For Android version only).
 
 # How to run
 
