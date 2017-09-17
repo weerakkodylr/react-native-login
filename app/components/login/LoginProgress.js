@@ -86,20 +86,10 @@ class LoginProgress extends React.Component{
 		if(this.props.stateDescription === AUTHENTICATING) {
 			loadingMessage = <Text style={styles.loadingText}>Logging in...</Text>
   			animatingStatus = true;
-		} else if(this.props.stateDescription === USER_LOGGED_OUT){
-			this.props.navigator.popToRoot({
-			  animated: true, // does the popToRoot have transition animation or does it happen immediately (optional)
-			  animationType: 'fade', // 'fade' (for both) / 'slide-horizontal' (for android) does the popToRoot have different transition animation (optional)
-			});		
-		} else if(this.props.stateDescription === USER_LOGGING_OUT){
-			loadingMessage = <View style={styles.loadingContainer}>
-								<Text style={styles.loadingText}>Logging out.</Text>
-							 </View>
-
+		} else if(this.props.stateDescription === USER_ACCOUNT_CREATING) {
+			loadingMessage = <Text style={styles.loadingText}>Your account is being created...</Text>
   			animatingStatus = true;
-		} else if (this.props.stateDescription === AUTHENTICATED){
-
-			if(this.props.userVarificationStatus === EMAIL_VARIFIED){
+		} else if( this.props.stateDescription === AUTHENTICATED && this.props.userVarificationStatus){
 				this.props.dispatch(userActions.getProfileDate());
 				this.props.navigator.push({
 	  				screen: 'FBLogin.Profile',
@@ -109,57 +99,57 @@ class LoginProgress extends React.Component{
 			  		passProps: {},
 			  		navigatorStyle: {navBarHidden:false}
 	  			})
-			} else if (this.props.userVarificationStatus === RESENDING_VARIFICATION) {
-				loadingMessage = <View style={styles.loadingContainer}>
+		} else if ( this.props.stateDescription === RESENDING_VARIFICATION ) {
+			loadingMessage = <View style={styles.loadingContainer}>
 
-									<Text style={styles.loadingText}>Re-sending varification email.</Text>
+								<Text style={styles.loadingText}>Re-sending varification email.</Text>
 
-								 </View>
+							 </View>
 
-	  			animatingStatus = true;
-			} else if(this.props.userVarificationStatus === RESENT_VARIFICATION){
+  			animatingStatus = true;
+		} else if( this.props.stateDescription === RESENT_VARIFICATION ){
 
-				loadingMessage = <View style={styles.loadingContainer}>
+			loadingMessage = <View style={styles.loadingContainer}>
 
-									<Text style={styles.loadingText}>Please check your email and varify brefore login again.</Text>
+								<Text style={styles.loadingText}>Please check your email and varify brefore login again.</Text>
 
-									<Button 
-										buttonStyle={styles.loadingButton}
-										buttonTextStyle={styles.loadingButtonText}
-										isDisabled={false}
-										buttonText={"Logout"} 
-										eventHandler={this.logOut.bind(this)}>
-									</Button>
-								 </View>
+								<Button 
+									buttonStyle={styles.loadingButton}
+									buttonTextStyle={styles.loadingButtonText}
+									isDisabled={false}
+									buttonText={"Logout"} 
+									eventHandler={this.logOut.bind(this)}>
+								</Button>
+							 </View>
 
-	  			animatingStatus = false;
-	  		} else {
+  			animatingStatus = false;
+  		} else if ( this.props.stateDescription === AUTHENTICATED && !this.props.userVarificationStatus ) {
 
-				loadingMessage = <View style={styles.loadingContainer}>
+			loadingMessage = <View style={styles.loadingContainer}>
 
-									<Text style={styles.loadingText}>Email address of your account is not varified yet.</Text>
+								<Text style={styles.loadingText}>Email address of your account is not varified yet.</Text>
 
-									<Button 
-										buttonStyle={styles.loadingButton}
-										buttonTextStyle={styles.loadingButtonText}
-										isDisabled={false}
-										buttonText={"Re-send varification email"} 
-										eventHandler={this.reSendTheVarificationEmail.bind(this)}>
-									</Button>
+								<Button 
+									buttonStyle={styles.loadingButton}
+									buttonTextStyle={styles.loadingButtonText}
+									isDisabled={false}
+									buttonText={"Re-send varification email"} 
+									eventHandler={this.reSendTheVarificationEmail.bind(this)}>
+								</Button>
 
-									<Button 
-										buttonStyle={styles.loadingButton}
-										buttonTextStyle={styles.loadingButtonText}
-										isDisabled={false}
-										buttonText={"Logout"} 
-										eventHandler={this.logOut.bind(this)}>
-									</Button>
+								<Button 
+									buttonStyle={styles.loadingButton}
+									buttonTextStyle={styles.loadingButtonText}
+									isDisabled={false}
+									buttonText={"Logout"} 
+									eventHandler={this.logOut.bind(this)}>
+								</Button>
 
-								 </View>
+							 </View>
 
-	  			animatingStatus = false;
+  			animatingStatus = false;
 				
-			}
+			
 		} else if(this.props.stateDescription === USER_ACCOUNT_CREATED){
 
 			loadingMessage = <View style={styles.loadingContainer}>
@@ -180,7 +170,18 @@ class LoginProgress extends React.Component{
 
   			animatingStatus = false;
 
-	  	} else if(this.props.stateDescription === BACK_TO_LOGIN) {
+	  	} else if(this.props.stateDescription === USER_LOGGED_OUT){
+			this.props.navigator.popToRoot({
+			  animated: true, // does the popToRoot have transition animation or does it happen immediately (optional)
+			  animationType: 'fade', // 'fade' (for both) / 'slide-horizontal' (for android) does the popToRoot have different transition animation (optional)
+			});		
+		} else if(this.props.stateDescription === USER_LOGGING_OUT){
+			loadingMessage = <View style={styles.loadingContainer}>
+								<Text style={styles.loadingText}>Logging out.</Text>
+							 </View>
+
+  			animatingStatus = true;
+		} else if(this.props.stateDescription === BACK_TO_LOGIN) {
 			console.log("Getting clode the loader");
 			this.props.navigator.popToRoot({
 			  animated: true, // does the popToRoot have transition animation or does it happen immediately (optional)
