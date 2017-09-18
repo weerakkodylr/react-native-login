@@ -4,11 +4,11 @@ import { connect } from 'react-redux'
 import firebase from 'firebase'
 import LogoIcon from '../common/icons/Logo'
 import Button from '../common/controlls/Button'
-import { UserLoginProcessStatus } from '../../common/Enums'
+import { UserLoginActionTypes } from '../../common/Enums'
 import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../common/StyleConstants'
 import { inputEmail, inputPassword, loginUser, createAccount, loginEmptyInputError, enableLoginInput, showCreateAccount } from '../../actions/loginActions'
 
-const { AUTHENTICATING } = UserLoginProcessStatus
+const { AUTHENTICATING } = UserLoginActionTypes
 
 class Login extends React.Component{
 
@@ -120,30 +120,16 @@ class Login extends React.Component{
 			inputRange: [0,1],
 			outputRange: ['0deg', '360deg']
 		})
-		const loginButtonText = {	
-			fontSize: ScaleProperties.fontSizeX,
-			color: FormElementProperties.buttonTextColor,
-		}
-		const inputButtonContainer = {
-			flex: 1,
-			justifyContent: 'center',
-			alignItems: 'center',
-			backgroundColor: FormElementProperties.buttonBackgroundColor,
-			borderRadius: 10,
-			borderWidth: FormElementProperties.buttonBorderWidth,
-			borderColor: CommonProperties.borderColor,
-			borderStyle: 'solid',
-		}
+
 		let loginMessage = '';
-		let loginButton = <View style={styles.inputContainer}>
-							<Button 
-								buttonStyle={{...inputButtonContainer, borderColor: conditionalBorderColorLogin}}
-								buttonTextStyle={{...loginButtonText, color: conditionalTextColorLogin}}
+		let loginButton = <Button 
+								buttonContainerStyle={{marginBottom:10}}
+								buttonStyle={{borderColor: conditionalBorderColorLogin}}
+								buttonTextStyle={{color: conditionalTextColorLogin}}
 								isDisabled={this.props.loginButtonDisabled}
 								buttonText={"Login"} 
 								eventHandler={this.handleLoginUser.bind(this)}>
 							</Button>
-						  </View>
 
 		let confirmPassword = <View style={styles.inputContainer}>
 								<TextInput 
@@ -157,18 +143,17 @@ class Login extends React.Component{
 								</TextInput>
 							  </View>
 
-		let goBackToLoginButton = <View style={styles.inputContainer}>
-									<Button 
-										buttonStyle={{...inputButtonContainer}}
-										buttonTextStyle={{...loginButtonText}}
+		let goBackToLoginButton = <Button 
+										buttonContainerStyle={{marginBottom:10}}
+										buttonStyle={{}}
+										buttonTextStyle={{}}
 										isDisabled={false}
 										buttonText={"Login with existing account"} 
 										eventHandler={this.goBackToLogin.bind(this)}>
 									</Button>
-								  </View>
 
 
-		if(this.props.stateDescription === UserLoginProcessStatus.AUTHENTICATING || this.props.stateDescription === UserLoginProcessStatus.USER_ACCOUNT_CREATING){
+		if(this.props.stateDescription === UserLoginActionTypes.AUTHENTICATING || this.props.stateDescription === UserLoginActionTypes.USER_ACCOUNT_CREATING ){
 			loginMessage = 'User Authenticating'
 
 			this.props.navigator.push({
@@ -227,17 +212,16 @@ class Login extends React.Component{
 					</View>
 					{confirmPassword}
 					{loginButton}
-					<View style={styles.inputContainer}>
+
+					<Button 
+						buttonContainerStyle={{marginBottom:10}}
+						buttonStyle={{borderColor: conditionalBorderColorCreateAccount}}
+						buttonTextStyle={{color: conditionalTextColorCreateAccount}}
+						eventHandler={this.goToCreateAccount.bind(this)} 
+						buttonText={"Create Account"} 
+						isDisabled={(isCreateAccount && this.props.loginButtonDisabled)}>
+					</Button>
 						
-						<Button 
-							buttonStyle={{...inputButtonContainer, borderColor: conditionalBorderColorCreateAccount}}
-							buttonTextStyle={{...loginButtonText, color: conditionalTextColorCreateAccount}}
-							eventHandler={this.goToCreateAccount.bind(this)} 
-							buttonText={"Create Account"} 
-							isDisabled={(isCreateAccount && this.props.loginButtonDisabled)}>
-						</Button>
-						
-					</View>
 					{goBackToLoginButton}
 				</KeyboardAvoidingView>
 				</ScrollView>
@@ -283,7 +267,7 @@ const styles = StyleSheet.create({
 		paddingRight: CommonProperties.screenPadding,
 	},
 	inputContainer: {
-		minHeight: CommonProperties.buttonMinHeightX,
+		minHeight: CommonProperties.inputElementMinHeightX,
 		marginBottom: CommonProperties.elementMarginBottom,
 		marginLeft: 5,
 		marginRight: 5,
@@ -294,7 +278,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	logoText: {
-		fontSize: ScaleProperties.fontSizeXX, 
+		fontSize: ScaleProperties.fontSizeXXX, 
 		color: CommonProperties.logoColor, 
 		textAlign:'center',
 	},

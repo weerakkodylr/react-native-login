@@ -1,4 +1,4 @@
-export const UserLoginProcessStatus = {
+export const UserLoginActionTypes = {
 
 		AUTHENTICATING: "AUTHENTICATING",
 		AUTHENTICATED: "AUTHENTICATED",
@@ -34,7 +34,7 @@ export const UserDataLoadingProcessStatus = {
 	
 }
 
-export const UserDataActionType = {
+export const UserDataActionTypes = {
 	SET_USER_GENDER: "SET_USER_GENDER",
 	SET_USER_DISPLAY_NAME: "SET_USER_DISPLAY_NAME",
 	SET_USER_BIRTHDAY: "SET_USER_BIRTHDAY",

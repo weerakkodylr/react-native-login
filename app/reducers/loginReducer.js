@@ -1,4 +1,4 @@
-import { UserLoginProcessStatus } from '../common/Enums'
+import { UserLoginActionTypes } from '../common/Enums'
 
 const { 
 		AUTHENTICATING, 
@@ -18,7 +18,7 @@ const {
 		LOGIN_PASSWORD_INPUT,
 		SHOW_CREATE_ACCOUNT,
 		ENABLE_LOGIN
-	  } = UserLoginProcessStatus
+	  } = UserLoginActionTypes
 
 const defaultState = {
 	inputEmail: '',

@@ -1,11 +1,14 @@
 import React from 'react'
-import {TextInput, Text, View, StyleSheet, TouchableOpacity, Picker, DatePickerAndroid, TouchableHighlight} from 'react-native'
+import {TextInput, Text, View, StyleSheet, TouchableOpacity, Picker, DatePickerAndroid, TouchableHighlight, KeyboardAvoidingView, ScrollView} from 'react-native'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
 import moment from 'moment'
 
 import CalendarIcon from '../common/icons/Calendar'
 import GenderIcon from '../common/icons/Gender'
+import Button from '../common/controlls/Button'
+
+import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../common/StyleConstants'
 
 import * as profileActions from '../../actions/userActions'
 
@@ -90,24 +93,49 @@ class UserProfile extends React.Component{
 
 		let styleAfterEditGender = {}
 		let styleAfterEditDoB = {}
-		const defaultEditControlStyle = {color:'#c6c6c6',fontSize:18}
+		const defaultEditControlStyle = {
+			color: FormElementProperties.textInputPlaceholderColor,
+			fontSize: ScaleProperties.fontSizeX,
+		}
+
+		const inputButtonContainer = {
+			flex: 1,
+			justifyContent: 'center',
+			alignItems: 'center',
+			backgroundColor: FormElementProperties.buttonBackgroundColor,
+			borderRadius: 10,
+			borderWidth: FormElementProperties.buttonBorderWidth,
+			borderColor: CommonProperties.borderColor,
+			borderStyle: 'solid',
+		}
+		const loginButtonText = {	
+			fontSize: ScaleProperties.fontSizeX,
+			color: FormElementProperties.buttonTextColor,
+		}
+
 		if(this.props.gender!=="Gender"){
-			styleAfterEditGender = {color:'#2e8ea9'}
+			styleAfterEditGender = {color: FormElementProperties.textInputTextColor}
 			console.log("Inside IF")
 		}
 		if(this.props.dateOfBirth!=="Date Of Birth")
-			styleAfterEditDoB = {color:'#2e8ea9'}
+			styleAfterEditDoB = {color: FormElementProperties.textInputTextColor}
 
 		return(
-			<View style={styles.profileContainer}>
-				<View style={styles.profileImage}>
-					<Text>Profile image goes here</Text>
-				</View>
-				<View style={styles.profileData}>
-					<View style={styles.profileName}>
-						<TextInput style={{fontSize:18, color:'#2e8ea9'}} placeholder="Name" placeholderTextColor="#c6c6c6" value={this.props.displayName}  onChangeText={this.changeDisplayName.bind(this)}/>
+			<ScrollView style={styles.profileContainer}>
+				
+				<KeyboardAvoidingView style={styles.profileData} behavior={"padding"}>
+					<View style={styles.inputContainer}>
+						<TextInput 
+							style={styles.inputText} 
+							selectionColor={FormElementProperties.textInputSelectionColor} 
+							underlineColorAndroid={FormElementProperties.textInputSelectionColor} 
+							placeholder={"Name"} 
+							placeholderTextColor={FormElementProperties.textInputPlaceholderColor}  
+							value={this.props.displayName}  
+							onChangeText={this.changeDisplayName.bind(this)}>
+						</TextInput>
 					</View>
-					<View style={styles.profileGender}>
+					<View style={styles.customInputContainer}>
 						<View style={{flexDirection: 'row',flex:1}}>
 							<TouchableOpacity onPress={this.selectGender.bind(this)} style={{justifyContent:'flex-end',flex:1}}>
 								<Text style={{...defaultEditControlStyle,...styleAfterEditGender}}>{this.props.gender}</Text>
@@ -119,7 +147,7 @@ class UserProfile extends React.Component{
 							</TouchableOpacity>
 						</View>
 					</View>
-					<View style={styles.profileDob}>
+					<View style={styles.customInputContainer}>
 						<View style={{flexDirection: 'row',flex:1}}>
 							<TouchableOpacity onPress={this.setBirthday.bind(this)} style={{justifyContent:'flex-end',flex:1}}>
 								<Text style={{...defaultEditControlStyle,...styleAfterEditDoB}}>{this.props.dateOfBirth}</Text>
@@ -131,18 +159,26 @@ class UserProfile extends React.Component{
 							</TouchableOpacity>
 						</View>
 					</View>
-					<View style={styles.profileUpdate}>
-						<TouchableOpacity style={{flex:1,backgroundColor:'#2e8ea9', justifyContent:'center',alignItems:'center', borderRadius:10}} onPress={this.handleUpdate.bind(this)} >
-							<Text style={{fontSize:20, color:'#ffffff'}}>Update</Text>
-						</TouchableOpacity>
-					</View>
-					<View style={styles.profileCancel}>
-						<TouchableOpacity style={{flex:1,backgroundColor:'#2e8ea9', justifyContent:'center',alignItems:'center', borderRadius:10}} onPress={this.handleClose.bind(this)} >
-							<Text style={{fontSize:20, color:'#ffffff'}}>Cancel</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-			</View>
+					
+					<Button 
+						buttonContainerStyle={{marginBottom:10}}
+						buttonStyle={{}}
+						buttonTextStyle={{}}
+						isDisabled={false}
+						buttonText={"Update"} 
+						eventHandler={this.handleUpdate.bind(this)}>
+					</Button>
+					<Button 
+						buttonContainerStyle={{}}
+						buttonStyle={{}}
+						buttonTextStyle={{}}
+						isDisabled={false}
+						buttonText={"Cancel"} 
+						eventHandler={this.handleClose.bind(this)}>
+					</Button>
+				
+				</KeyboardAvoidingView>
+			</ScrollView>
 		)
 	}
 }
@@ -159,26 +195,26 @@ export default connect(storeProps)(UserProfile);
 
 const styles = StyleSheet.create({
 	profileContainer: {
-		flex: 1,
-		backgroundColor: 'pink',
-		margin:5
+		//flex: 1,
+		backgroundColor: ContainerProperties.backgroundColor,
+		padding:10
 	},
 	profileImage: {
 		backgroundColor: 'yellow',
 		//width:200,
 		minHeight:40,
-		flex: 1,
+		//flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
 	profileData: {
-		flex: 3,
-		backgroundColor: 'white',
+		//flex: 3,
+		backgroundColor: ContainerProperties.backgroundColor,
 		//justifyContent:'space-between',
 
 	},
 	profileName: {
-		flex:1,
+		//flex:1,
 		//marginBottom:5, 
 		marginTop:5,
 		//backgroundColor:'green',
@@ -186,7 +222,7 @@ const styles = StyleSheet.create({
 		justifyContent:'flex-end'
 	},
 	profileDob: {
-		flex:1,
+		//flex:1,
 		flexDirection: 'row', 
 		justifyContent:'space-between',
 		//marginBottom:5, 
@@ -194,36 +230,58 @@ const styles = StyleSheet.create({
 		marginLeft:5, 
 		marginRight:5, 
 		borderBottomWidth:2, 
-		borderColor:'#c6c6c6',
-		minHeight: 20,
+		borderColor: CommonProperties.borderColor,
+		minHeight: FormElementProperties.inputElementMinHeightX,
 	},
 	profileGender: {
-		flex:1,
+		//flex:1,
 		flexDirection: 'row', 
 		marginLeft:5, 
 		marginRight:5, 
 		//marginBottom:5, 
 		//marginTop:5, 
 		borderBottomWidth:2, 
-		borderColor:'#c6c6c6',
+		borderColor: CommonProperties.borderColor,
 		//alignItems:'stretch',
 		justifyContent:'space-between',
-		minHeight: 20,
+		minHeight: FormElementProperties.inputElementMinHeightX,
 		//backgroundColor:'pink'
 
 	},
-	profileUpdate: {
+	inputText: {
 		flex:1,
+		color: FormElementProperties.textInputTextColor,
+		fontSize: ScaleProperties.fontSizeX,
+		minHeight: FormElementProperties.inputElementMinHeightX,
+	},
+	profileUpdate: {
+		//flex:1,
 		alignItems:'stretch',
 		justifyContent:'center',
 		marginTop:2,
-		minHeight: 15,
+		height: FormElementProperties.inputElementMinHeightX
 	},
 	profileCancel: {
-		flex:1,
+		//flex:1,
 		alignItems:'stretch',
 		justifyContent:'center',
 		marginTop:2,
-		minHeight: 15,
-	}
+		height: FormElementProperties.inputElementMinHeightX
+	},
+	inputContainer: {
+		marginLeft:5, 
+		marginRight:5, 
+		minHeight: CommonProperties.inputElementMinHeightX,
+		marginBottom:10,
+	},
+	customInputContainer: {
+		flexDirection: 'row', 
+		marginLeft:5, 
+		marginRight:5, 
+		borderBottomWidth:1, 
+		borderColor: CommonProperties.borderColor,
+		justifyContent:'space-between',
+		minHeight: FormElementProperties.inputElementMinHeightX,
+		marginBottom: 10
+	},
 })

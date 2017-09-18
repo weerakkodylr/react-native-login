@@ -1,4 +1,4 @@
-import { UserDataActionType } from '../common/Enums'
+import { UserDataActionTypes } from '../common/Enums'
 
 const { 
 		SET_USER_GENDER,
@@ -10,7 +10,7 @@ const {
 		UPDATING_USER_PROFILE_DATA,
 		USER_PROFILE_DATA_UPDATED,
 		USER_PROFILE_DATA_UPDATING_ERROR
-	  } = UserDataActionType
+	  } = UserDataActionTypes
 
 export default function reducer (state = {
 	displayName: null,

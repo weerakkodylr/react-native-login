@@ -26,10 +26,17 @@ const scaleRatio = baseScaleVlue / guidelineBaseWidth;
 
 
 export const ScaleProperties = {
-	fontSizeXX: 50 * scaleRatio,
+	fontSizeXX: 30 * scaleRatio,
+	fontSizeXXX: 50 * scaleRatio,
 	fontSizeX: 22 * scaleRatio,
 	logoWidth: 350 * scaleRatio,
-	logoHeight: 100 * scaleRatio
+	logoHeight: 100 * scaleRatio,
+
+	//gameLaunchBoxSizeX: 50 * scaleRatio,
+	//gameLaunchBoxSizeXX: 100 * scaleRatio,
+	gameLaunchBoxSizeX: baseScaleVlue/2 - 30,
+	gameLaunchBoxSizeXX: baseScaleVlue/2 - 20,
+	gameLaunchBoxSizeXXX: baseScaleVlue/2 - 10,
 }
 
 export const FormElementProperties = {
@@ -49,12 +56,16 @@ export const ContainerProperties = {
 }
 
 export const CommonProperties = {
+	backgroundColor: colors.lightGreen,
 	logoColor: colors.darkYellow,
 	disabledColor : colors.gray,
 	borderColor: colors.darkYellow,
+	borderWidth: 2,
 	textColor: colors.darkYellow,
-	buttonMinHeightX : 60,
-	buttonMinHeightXX : 80,
+	inputElementMinHeightX : 60,
+	inputElementMinHeightXX : 80,
 	elementMarginBottom: 10,
-	screenPadding: 10
+	screenPadding: 10,
+	screenWidth: width,
+	screenHeight: height
 }
