@@ -47,12 +47,8 @@ class Welcome extends React.Component{
 		const controllButton = {
 			height: CommonProperties.inputElementMinHeightX,
 			width: ScaleProperties.gameLaunchBoxSizeXXX,
-		}
-
-		const controllButtonContainer = {
 			marginLeft: 5,
 			marginRight: 5,
-			marginBottom: 5,
 		}
 
 		return(
@@ -63,7 +59,6 @@ class Welcome extends React.Component{
 				<ScrollView>
 					<View style={styles.gamesContainer}>
 						<Button 
-							buttonContainerStyle={{}}
 							buttonStyle={launchButton}
 							buttonTextStyle={{}}
 							isDisabled={false}
@@ -81,14 +76,12 @@ class Welcome extends React.Component{
 				</ScrollView>
 				<View style={styles.controlBox}>
 					<Button 
-						buttonContainerStyle={controllButtonContainer}
 						buttonStyle={controllButton}
 						isDisabled={false}
 						buttonText={"Logout"} 
-						eventHandler={this.handleLaunchGame.bind(this)}>
+						eventHandler={this.handleLogout.bind(this)}>
 					</Button>
 					<Button 
-						buttonContainerStyle={controllButtonContainer}
 						buttonStyle={controllButton}
 						isDisabled={false}
 						buttonText={"Profile"} 
@@ -138,7 +131,9 @@ const styles = StyleSheet.create({
 	},
 	controlBox: {
 		flexDirection: 'row',
-		justifyContent: 'space-between'
+		justifyContent: 'space-between',
+		minHeight: CommonProperties.inputElementMinHeightX,
+		marginBottom:5
 	},
 	launchButtonText: {
 

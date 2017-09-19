@@ -159,24 +159,22 @@ class UserProfile extends React.Component{
 							</TouchableOpacity>
 						</View>
 					</View>
-					
-					<Button 
-						buttonContainerStyle={{marginBottom:10}}
-						buttonStyle={{}}
-						buttonTextStyle={{}}
-						isDisabled={false}
-						buttonText={"Update"} 
-						eventHandler={this.handleUpdate.bind(this)}>
-					</Button>
-					<Button 
-						buttonContainerStyle={{}}
-						buttonStyle={{}}
-						buttonTextStyle={{}}
-						isDisabled={false}
-						buttonText={"Cancel"} 
-						eventHandler={this.handleClose.bind(this)}>
-					</Button>
-				
+					<View>
+						<Button 
+							buttonStyle={{marginBottom:10}}
+							buttonTextStyle={{}}
+							isDisabled={false}
+							buttonText={"Update"} 
+							eventHandler={this.handleUpdate.bind(this)}>
+						</Button>
+					</View>
+					<View>
+						<Button 
+							isDisabled={false}
+							buttonText={"Cancel"} 
+							eventHandler={this.handleClose.bind(this)}>
+						</Button>
+					</View>
 				</KeyboardAvoidingView>
 			</ScrollView>
 		)

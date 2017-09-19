@@ -110,8 +110,7 @@ class LoginProgress extends React.Component{
 								<Text style={styles.loadingText}>Please check your email and varify brefore login again.</Text>
 
 								<Button 
-									buttonContainerStyle={{alignSelf:'stretch'}}
-									buttonStyle={{}}
+									buttonStyle={{alignSelf:'stretch'}}
 									buttonTextStyle={{}}
 									isDisabled={false}
 									buttonText={"Logout"} 
@@ -127,14 +126,14 @@ class LoginProgress extends React.Component{
 								<Text style={styles.loadingText}>Email address of your account is not varified yet.</Text>
 
 								<Button 
-									buttonContainerStyle={{alignSelf:'stretch', marginBottom:10}}
+									buttonStyle={{alignSelf:'stretch', marginBottom:10}}
 									isDisabled={false}
 									buttonText={"Re-send varification email"} 
 									eventHandler={this.reSendTheVarificationEmail.bind(this)}>
 								</Button>
 
 								<Button 
-									buttonContainerStyle={{alignSelf:'stretch'}}
+									buttonStyle={{alignSelf:'stretch'}}
 									isDisabled={false}
 									buttonText={"Logout"} 
 									eventHandler={this.logOut.bind(this)}>
@@ -154,7 +153,7 @@ class LoginProgress extends React.Component{
 								</Text>
 
 								<Button 
-									buttonContainerStyle={{alignSelf:'stretch'}}
+									buttonStyle={{alignSelf:'stretch'}}
 									isDisabled={false}
 									buttonText={"Logout"} 
 									eventHandler={this.logOut.bind(this)}>
@@ -187,7 +186,7 @@ class LoginProgress extends React.Component{
 								<Text style={styles.loadingText}>Incorrect email address or password entered.</Text>
 
 								<Button 
-									buttonContainerStyle={{alignSelf:'stretch'}}
+									buttonStyle={{alignSelf:'stretch'}}
 									isDisabled={false}
 									buttonText={"Back"} 
 									eventHandler={this.goBackToLogin.bind(this)}>

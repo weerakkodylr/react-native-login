@@ -122,14 +122,15 @@ class Login extends React.Component{
 		})
 
 		let loginMessage = '';
-		let loginButton = <Button 
-								buttonContainerStyle={{marginBottom:10}}
-								buttonStyle={{borderColor: conditionalBorderColorLogin}}
-								buttonTextStyle={{color: conditionalTextColorLogin}}
-								isDisabled={this.props.loginButtonDisabled}
-								buttonText={"Login"} 
-								eventHandler={this.handleLoginUser.bind(this)}>
-							</Button>
+		let loginButton = 	<View>
+								<Button 
+									buttonStyle={{borderColor: conditionalBorderColorLogin, marginBottom:10}}
+									buttonTextStyle={{color: conditionalTextColorLogin}}
+									isDisabled={this.props.loginButtonDisabled}
+									buttonText={"Login"} 
+									eventHandler={this.handleLoginUser.bind(this)}>
+								</Button>
+							</View>
 
 		let confirmPassword = <View style={styles.inputContainer}>
 								<TextInput 
@@ -143,15 +144,15 @@ class Login extends React.Component{
 								</TextInput>
 							  </View>
 
-		let goBackToLoginButton = <Button 
-										buttonContainerStyle={{marginBottom:10}}
-										buttonStyle={{}}
-										buttonTextStyle={{}}
-										isDisabled={false}
-										buttonText={"Login with existing account"} 
-										eventHandler={this.goBackToLogin.bind(this)}>
-									</Button>
-
+		let goBackToLoginButton = 	<View>
+										<Button 
+											buttonStyle={{marginBottom:10}}
+											buttonTextStyle={{}}
+											isDisabled={false}
+											buttonText={"Login with existing account"} 
+											eventHandler={this.goBackToLogin.bind(this)}>
+										</Button>
+									</View>
 
 		if(this.props.stateDescription === UserLoginActionTypes.AUTHENTICATING || this.props.stateDescription === UserLoginActionTypes.USER_ACCOUNT_CREATING ){
 			loginMessage = 'User Authenticating'
@@ -212,16 +213,15 @@ class Login extends React.Component{
 					</View>
 					{confirmPassword}
 					{loginButton}
-
-					<Button 
-						buttonContainerStyle={{marginBottom:10}}
-						buttonStyle={{borderColor: conditionalBorderColorCreateAccount}}
-						buttonTextStyle={{color: conditionalTextColorCreateAccount}}
-						eventHandler={this.goToCreateAccount.bind(this)} 
-						buttonText={"Create Account"} 
-						isDisabled={(isCreateAccount && this.props.loginButtonDisabled)}>
-					</Button>
-						
+					<View>
+						<Button 
+							buttonStyle={{borderColor: conditionalBorderColorCreateAccount, marginBottom:10}}
+							buttonTextStyle={{color: conditionalTextColorCreateAccount}}
+							eventHandler={this.goToCreateAccount.bind(this)} 
+							buttonText={"Create Account"} 
+							isDisabled={(isCreateAccount && this.props.loginButtonDisabled)}>
+						</Button>
+					</View>	
 					{goBackToLoginButton}
 				</KeyboardAvoidingView>
 				</ScrollView>
