@@ -225,6 +225,7 @@ class Login extends React.Component{
 					{goBackToLoginButton}
 				</KeyboardAvoidingView>
 				</ScrollView>
+				
 			</View>
 			
 		)
@@ -265,6 +266,7 @@ const styles = StyleSheet.create({
 	subContainer : {
 		paddingLeft: CommonProperties.screenPadding,
 		paddingRight: CommonProperties.screenPadding,
+		zIndex: 1
 	},
 	inputContainer: {
 		minHeight: CommonProperties.inputElementMinHeightX,

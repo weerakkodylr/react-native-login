@@ -1,16 +1,45 @@
 import React from 'react'
-import {TextInput, Text, View, StyleSheet, TouchableOpacity, Picker, DatePickerAndroid, TouchableHighlight, KeyboardAvoidingView, ScrollView} from 'react-native'
+import { TextInput, Text, View, StyleSheet, TouchableOpacity, Picker, DatePickerAndroid, TouchableHighlight, KeyboardAvoidingView, ScrollView, Dimensions, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
 import moment from 'moment'
-
+import { UserDataActionTypes, OverlayProgressStatus } from '../../common/Enums'
 import CalendarIcon from '../common/icons/Calendar'
 import GenderIcon from '../common/icons/Gender'
 import Button from '../common/controlls/Button'
+import OverlayMessages from '../common/controlls/OverlayMessages'
 
-import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../common/StyleConstants'
+import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties, Colors } from '../../common/StyleConstants'
 
 import * as profileActions from '../../actions/userActions'
+import * as layoutActions from '../../actions/layoutActions'
+
+const { 
+		UPDATING_USER_PROFILE_DATA,
+		USER_PROFILE_DATA_UPDATED,
+		USER_PROFILE_DATA_UPDATING_ERROR,
+		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED,
+
+		REQUESTING_USER_PROFILE_DATA,
+		USER_PROFILE_DATA_RECEIVED,
+		USER_PROFILE_DATA_RECEIVING_ERROR,
+	  } = UserDataActionTypes
+
+const { 
+		LOADINGDATA,
+		DATALOADED,
+		ERROR,
+		UPDATINGDATA,
+		DATAUPDATED
+	  } = OverlayProgressStatus
+
+const overlayContentMapper = {
+		UPDATING_USER_PROFILE_DATA: LOADINGDATA,
+		USER_PROFILE_DATA_UPDATED: DATAUPDATED,
+		USER_PROFILE_DATA_UPDATING_ERROR: ERROR,
+		USER_PROFILE_DATA_RECEIVED: DATALOADED,
+		USER_PROFILE_DATA_RECEIVING_ERROR: ERROR
+}
 
 class UserProfile extends React.Component{
 
@@ -32,6 +61,7 @@ class UserProfile extends React.Component{
 
 
 	handleUpdate = () => {
+
 		const db = this.db;
 		this.props.dispatch(profileActions.updateProfile({displayName: this.props.displayName, email: this.props.email, gender: this.props.gender, dateOfBirth: this.props.dateOfBirth, uid:this.currentUser.uid}, db));
 	}
@@ -62,7 +92,6 @@ class UserProfile extends React.Component{
 	selectGender = () => {
 		this.props.navigator.showModal({
 		  screen: "FBLogin.SelectDialog", // unique ID registered with Navigation.registerScreen
-		  //title: "Select Gender", // title of the screen as appears in the nav bar (optional)
 		  passProps: {
 		  	dispatch: this.props.dispatch, 
 		  	action: profileActions.setUserGender, 
@@ -70,13 +99,11 @@ class UserProfile extends React.Component{
 		  	listViewData: [{optionKey: 'Male', optionValue:'Male'},{optionKey: 'Female', optionValue:'Female'}]
 		  }, // simple serializable object that will pass as props to the modal (optional)
 		  navigatorStyle: {navBarHidden:true}, // override the navigator style for the screen, see "Styling the navigator" below (optional)
-		 // navigatorButtons: {}, // override the nav buttons for the screen, see "Adding buttons to the navigator" below (optional)
-		  //animationType: 'slide-up' // 'none' / 'slide-up' , appear animation for the modal (optional, default 'slide-up')
-		  style: {
-		    backgroundBlur: "light", // 'dark' / 'light' / 'xlight' / 'none' - the type of blur on the background
-		    backgroundColor: "#ffffff90", // tint color for the background, you can specify alpha here (optional)
-		    tapBackgroundToDismiss: true // dismisses LightBox on background taps (optional)
-		  }
+		  // style: {
+		  //   backgroundBlur: "light", // 'dark' / 'light' / 'xlight' / 'none' - the type of blur on the background
+		  //   backgroundColor: "#ffffff90", // tint color for the background, you can specify alpha here (optional)
+		  //   tapBackgroundToDismiss: true // dismisses LightBox on background taps (optional)
+		  // }
 		});
 	}
 
@@ -88,11 +115,18 @@ class UserProfile extends React.Component{
 		});
 	}
 
+	onLayoutChnage(){
+		const {height, width} = Dimensions.get('window');
+		this.props.dispatch(layoutActions.setLayoutDimentions(width, height))
+	}
+
 	render(){
 		//console.log(this.props)
 
 		let styleAfterEditGender = {}
 		let styleAfterEditDoB = {}
+		//const isOverlayDisplayStatus = this.props.stateDescription === UPDATING_USER_PROFILE_DATA || this.props.stateDescription === USER_PROFILE_DATA_UPDATING_ERROR || this.props.stateDescription === USER_PROFILE_DATA_UPDATED
+
 		const defaultEditControlStyle = {
 			color: FormElementProperties.textInputPlaceholderColor,
 			fontSize: ScaleProperties.fontSizeX,
@@ -113,6 +147,32 @@ class UserProfile extends React.Component{
 			color: FormElementProperties.buttonTextColor,
 		}
 
+		let overlayElement = <Text></Text>
+		let passingState = "DATALOADED"
+		if( !this.props.displayName ) {
+			passingState = LOADINGDATA
+			overlayElement = <OverlayMessages stateDescription={LOADINGDATA}/>
+		} else if( this.props.stateDescription === USER_PROFILE_DATA_UPDATED_AND_NOTIFIED ){
+			overlayElement = <Text></Text>
+		} else if ( 
+				this.props.stateDescription === UPDATING_USER_PROFILE_DATA || 
+				this.props.stateDescription === USER_PROFILE_DATA_UPDATING_ERROR || 
+				this.props.stateDescription === USER_PROFILE_DATA_UPDATED ||
+				this.props.stateDescription === USER_PROFILE_DATA_RECEIVED ||
+				this.props.stateDescription === USER_PROFILE_DATA_RECEIVING_ERROR
+				) {
+			passingState = overlayContentMapper[this.props.stateDescription]
+			//overlayElement = <OverlayMessages stateDescription={}/>
+			if (this.props.stateDescription === USER_PROFILE_DATA_UPDATED || this.props.stateDescription === USER_PROFILE_DATA_RECEIVED) {
+				setTimeout(()=>{
+					console.log("SET TIMEOUT CALLED")
+					this.props.dispatch(profileActions.updateNotified())
+				},2500)
+			}
+			overlayElement = <OverlayMessages stateDescription={passingState} overlaySize={{height: this.props.layoutHeight, width: this.props.layoutWidth}}/>
+		}  
+
+		
 		if(this.props.gender!=="Gender"){
 			styleAfterEditGender = {color: FormElementProperties.textInputTextColor}
 			console.log("Inside IF")
@@ -120,131 +180,136 @@ class UserProfile extends React.Component{
 		if(this.props.dateOfBirth!=="Date Of Birth")
 			styleAfterEditDoB = {color: FormElementProperties.textInputTextColor}
 
+
 		return(
-			<ScrollView style={styles.profileContainer}>
-				
-				<KeyboardAvoidingView style={styles.profileData} behavior={"padding"}>
-					<View style={styles.inputContainer}>
-						<TextInput 
-							style={styles.inputText} 
-							selectionColor={FormElementProperties.textInputSelectionColor} 
-							underlineColorAndroid={FormElementProperties.textInputSelectionColor} 
-							placeholder={"Name"} 
-							placeholderTextColor={FormElementProperties.textInputPlaceholderColor}  
-							value={this.props.displayName}  
-							onChangeText={this.changeDisplayName.bind(this)}>
-						</TextInput>
-					</View>
-					<View style={styles.customInputContainer}>
-						<View style={{flexDirection: 'row',flex:1}}>
-							<TouchableOpacity onPress={this.selectGender.bind(this)} style={{justifyContent:'flex-end',flex:1}}>
-								<Text style={{...defaultEditControlStyle,...styleAfterEditGender}}>{this.props.gender}</Text>
-							</TouchableOpacity>
+			<View style={styles.containerView}>
+				<ScrollView style={styles.profileContainer} onLayout={this.onLayoutChnage.bind(this)}  >
+					
+					<KeyboardAvoidingView style={styles.profileData} behavior={"padding"}>
+						<View style={styles.inputContainer}>
+							<TextInput 
+								style={styles.inputText} 
+								selectionColor={FormElementProperties.textInputSelectionColor} 
+								underlineColorAndroid={FormElementProperties.textInputSelectionColor} 
+								placeholder={"Name"} 
+								placeholderTextColor={FormElementProperties.textInputPlaceholderColor}  
+								value={this.props.displayName}  
+								onChangeText={this.changeDisplayName.bind(this)}>
+							</TextInput>
 						</View>
-						<View style={{flexDirection: 'row',alignItems:'flex-end',paddingBottom:5}}>
-							<TouchableOpacity onPress={this.selectGender.bind(this)}>
-								<GenderIcon />
-							</TouchableOpacity>
+						<View style={styles.customInputContainer}>
+							<View style={{flexDirection: 'row',flex:1}}>
+								<TouchableOpacity onPress={this.selectGender.bind(this)} style={{justifyContent:'flex-end',flex:1}}>
+									<Text style={{...defaultEditControlStyle,...styleAfterEditGender}}>{this.props.gender}</Text>
+								</TouchableOpacity>
+							</View>
+							<View style={{flexDirection: 'row',alignItems:'flex-end',paddingBottom:5}}>
+								<TouchableOpacity onPress={this.selectGender.bind(this)}>
+									<GenderIcon />
+								</TouchableOpacity>
+							</View>
 						</View>
-					</View>
-					<View style={styles.customInputContainer}>
-						<View style={{flexDirection: 'row',flex:1}}>
-							<TouchableOpacity onPress={this.setBirthday.bind(this)} style={{justifyContent:'flex-end',flex:1}}>
-								<Text style={{...defaultEditControlStyle,...styleAfterEditDoB}}>{this.props.dateOfBirth}</Text>
-							</TouchableOpacity>
+						<View style={styles.customInputContainer}>
+							<View style={{flexDirection: 'row',flex:1}}>
+								<TouchableOpacity onPress={this.setBirthday.bind(this)} style={{justifyContent:'flex-end',flex:1}}>
+									<Text style={{...defaultEditControlStyle,...styleAfterEditDoB}}>{this.props.dateOfBirth}</Text>
+								</TouchableOpacity>
+							</View>
+							<View style={{flexDirection: 'row',alignItems:'flex-end',paddingBottom:5}}>
+								<TouchableOpacity onPress={this.setBirthday.bind(this)}>
+									<CalendarIcon />
+								</TouchableOpacity>
+							</View>
 						</View>
-						<View style={{flexDirection: 'row',alignItems:'flex-end',paddingBottom:5}}>
-							<TouchableOpacity onPress={this.setBirthday.bind(this)}>
-								<CalendarIcon />
-							</TouchableOpacity>
+						<View>
+							<Button 
+								buttonStyle={{marginBottom:10}}
+								buttonTextStyle={{}}
+								isDisabled={false}
+								buttonText={"Update"} 
+								eventHandler={this.handleUpdate.bind(this)}>
+							</Button>
 						</View>
-					</View>
-					<View>
-						<Button 
-							buttonStyle={{marginBottom:10}}
-							buttonTextStyle={{}}
-							isDisabled={false}
-							buttonText={"Update"} 
-							eventHandler={this.handleUpdate.bind(this)}>
-						</Button>
-					</View>
-					<View>
-						<Button 
-							isDisabled={false}
-							buttonText={"Cancel"} 
-							eventHandler={this.handleClose.bind(this)}>
-						</Button>
-					</View>
-				</KeyboardAvoidingView>
-			</ScrollView>
+						<View>
+							<Button 
+								isDisabled={false}
+								buttonText={"Cancel"} 
+								eventHandler={this.handleClose.bind(this)}>
+							</Button>
+						</View>
+					</KeyboardAvoidingView>
+				</ScrollView>
+				{overlayElement}
+			</View>
 		)
 	}
 }
 
+const MessageOverlay = (props) => (
+	<View style={{flex:1,position: 'absolute', left: 0, top: 0,}}>
+		<View style={props.overlayStyle}>
+		</View>
+		<View style={props.overlayMessageViewStyle}>
+			{props.messageText}
+		</View>
+	</View>
+)
+
 const storeProps = (store)=>({
-    displayName : store.profile.displayName,
-    email : store.profile.email,
-    gender : store.profile.gender,
-    dateOfBirth: store.profile.dateOfBirth,
+    displayName : store.user.displayName,
+    email : store.user.email,
+    gender : store.user.gender,
+    dateOfBirth: store.user.dateOfBirth,
+    stateDescription: store.user.stateDescription,
+    layoutWidth: store.layout.layoutWidth,
+    layoutHeight: store.layout.layoutHeight,
+    error: store.user.error
   })
 
 
 export default connect(storeProps)(UserProfile);
 
 const styles = StyleSheet.create({
-	profileContainer: {
-		//flex: 1,
+	containerView: {
+		flex: 1,
 		backgroundColor: ContainerProperties.backgroundColor,
-		padding:10
+	},
+	profileContainer: {
+		backgroundColor: ContainerProperties.backgroundColor,
+		padding:10,
+		zIndex: 1
 	},
 	profileImage: {
 		backgroundColor: 'yellow',
-		//width:200,
 		minHeight:40,
-		//flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center'
 	},
 	profileData: {
-		//flex: 3,
 		backgroundColor: ContainerProperties.backgroundColor,
-		//justifyContent:'space-between',
-
 	},
-	profileName: {
-		//flex:1,
-		//marginBottom:5, 
+	profileName: { 
 		marginTop:5,
-		//backgroundColor:'green',
 		minHeight: 20,
 		justifyContent:'flex-end'
 	},
 	profileDob: {
-		//flex:1,
 		flexDirection: 'row', 
 		justifyContent:'space-between',
-		//marginBottom:5, 
-		//marginTop:5, 
 		marginLeft:5, 
 		marginRight:5, 
-		borderBottomWidth:2, 
+		borderBottomWidth: CommonProperties.borderWidth, 
 		borderColor: CommonProperties.borderColor,
 		minHeight: FormElementProperties.inputElementMinHeightX,
 	},
 	profileGender: {
-		//flex:1,
 		flexDirection: 'row', 
 		marginLeft:5, 
 		marginRight:5, 
-		//marginBottom:5, 
-		//marginTop:5, 
-		borderBottomWidth:2, 
+		borderBottomWidth: CommonProperties.borderWidth, 
 		borderColor: CommonProperties.borderColor,
-		//alignItems:'stretch',
 		justifyContent:'space-between',
-		minHeight: FormElementProperties.inputElementMinHeightX,
-		//backgroundColor:'pink'
-
+		minHeight: FormElementProperties.inputElementMinHeightX
 	},
 	inputText: {
 		flex:1,

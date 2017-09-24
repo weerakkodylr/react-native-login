@@ -1,6 +1,6 @@
 import {Dimensions} from 'react-native'
 
-const colors = {
+export const Colors = {
 	darkYellow : '#FFF266',
 	white : '#FFFFFF',
 	gray : '#B0C1AA',
@@ -42,26 +42,26 @@ export const ScaleProperties = {
 export const FormElementProperties = {
 	buttonBorderWidth: 2,
 	borderRadius: 5,
-	textInputSelectionColor: colors.darkYellow,
-	textInputPlaceholderColor: colors.gray,
-	textInputTextColor: colors.darkYellow,
-	buttonBackgroundColor: colors.darkGreen,
-	buttonTextColor: colors.darkYellow,
+	textInputSelectionColor: Colors.darkYellow,
+	textInputPlaceholderColor: Colors.gray,
+	textInputTextColor: Colors.darkYellow,
+	buttonBackgroundColor: Colors.darkGreen,
+	buttonTextColor: Colors.darkYellow,
 
 	
 }
 
 export const ContainerProperties = {
-	backgroundColor: colors.lightGreen
+	backgroundColor: Colors.lightGreen
 }
 
 export const CommonProperties = {
-	backgroundColor: colors.lightGreen,
-	logoColor: colors.darkYellow,
-	disabledColor : colors.gray,
-	borderColor: colors.darkYellow,
+	backgroundColor: Colors.lightGreen,
+	logoColor: Colors.darkYellow,
+	disabledColor : Colors.gray,
+	borderColor: Colors.darkYellow,
 	borderWidth: 2,
-	textColor: colors.darkYellow,
+	textColor: Colors.darkYellow,
 	inputElementMinHeightX : 60,
 	inputElementMinHeightXX : 80,
 	elementMarginBottom: 10,

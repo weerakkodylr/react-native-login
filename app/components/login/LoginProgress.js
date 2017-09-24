@@ -46,6 +46,7 @@ class LoginProgress extends React.Component{
 	}
 
 	onNavigatorEvent(event) {
+		//To remove the loader from screen stack when comming from a back button
 	    switch(event.id) {
 	    	case 'willAppear':
 	    		this.props.navigator.pop({

@@ -94,7 +94,7 @@ class Welcome extends React.Component{
 }
 
 const storeProps = (store) => ({
-	name : store.profile.displayName
+	name : store.user.displayName
 })
 
 export default connect(storeProps)(Welcome)

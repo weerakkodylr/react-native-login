@@ -114,6 +114,7 @@ export function loginUser(email,password,firebase){
 		.catch((error) => {
 			dispatch({
 				type: AUTHENTICATION_ERROR, 
+				payload: error
 			});
 		});
 	}

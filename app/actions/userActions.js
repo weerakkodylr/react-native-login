@@ -10,7 +10,8 @@ const {
 		USER_PROFILE_DATA_RECEIVING_ERROR,
 		UPDATING_USER_PROFILE_DATA,
 		USER_PROFILE_DATA_UPDATED,
-		USER_PROFILE_DATA_UPDATING_ERROR
+		USER_PROFILE_DATA_UPDATING_ERROR,
+		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED
 	  } = UserDataActionTypes
 
 export function setUserGender(gender){
@@ -91,9 +92,17 @@ export function updateProfile(profile, db) {
 		})
 		.catch((error) => {
 			dispatch({
-				type: USER_PROFILE_DATA_UPDATING_ERROR
+				type: USER_PROFILE_DATA_UPDATING_ERROR,
+				payload: error
 			})
 		})
 		
 	}
 }
+
+	export function updateNotified(){
+		return {
+			type: USER_PROFILE_DATA_UPDATED_AND_NOTIFIED,
+			payload: true
+		}
+	}
