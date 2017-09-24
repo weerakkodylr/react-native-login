@@ -22,16 +22,14 @@ class AcitivityIndicator extends React.Component{
 			  animationType: 'none' // 'none' / 'slide-down' , dismiss animation for the modal (optional, default 'slide-down')
 			});
 		} else if (this.props.stateDescription === USER_PROFILE_DATA_UPDATING_ERROR) {
-			console.log("ERRRRRORRRRRRRRRRRRRRRRRRR")
 			statusMessage = error.message
 			animatingStatus = false
 		}
 
-		console.log("STAAAAAAAAAAAAAAAAAAATUS ", this.props.stateDescription)
 		return (
 		<View style={styles.indicatorContainer}>
-			<ActivityIndicator size={60} animating={animatingStatus} color={CommonProperties.textColor} />
-			<Text style={styles.statusMessage}>{statusMessage} - {this.props.stateDescription}</Text>
+			<ActivityIndicator size={"large"} animating={animatingStatus} color={CommonProperties.textColor} />
+			<Text style={styles.statusMessage}>{statusMessage}</Text>
 		</View>
 		)
 	}

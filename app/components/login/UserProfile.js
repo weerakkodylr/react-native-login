@@ -34,7 +34,7 @@ const {
 	  } = OverlayProgressStatus
 
 const overlayContentMapper = {
-		UPDATING_USER_PROFILE_DATA: LOADINGDATA,
+		UPDATING_USER_PROFILE_DATA: UPDATINGDATA,
 		USER_PROFILE_DATA_UPDATED: DATAUPDATED,
 		USER_PROFILE_DATA_UPDATING_ERROR: ERROR,
 		USER_PROFILE_DATA_RECEIVED: DATALOADED,
@@ -158,7 +158,6 @@ class UserProfile extends React.Component{
 				this.props.stateDescription === UPDATING_USER_PROFILE_DATA || 
 				this.props.stateDescription === USER_PROFILE_DATA_UPDATING_ERROR || 
 				this.props.stateDescription === USER_PROFILE_DATA_UPDATED ||
-				this.props.stateDescription === USER_PROFILE_DATA_RECEIVED ||
 				this.props.stateDescription === USER_PROFILE_DATA_RECEIVING_ERROR
 				) {
 			passingState = overlayContentMapper[this.props.stateDescription]

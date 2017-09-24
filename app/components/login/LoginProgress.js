@@ -203,7 +203,7 @@ class LoginProgress extends React.Component{
 
 		return(
 			<View style={styles.loadingContainer}>
-				<ActivityIndicator size={60} animating={animatingStatus} color={CommonProperties.textColor} />
+				<ActivityIndicator size={"large"} animating={animatingStatus} color={CommonProperties.textColor} />
 				<View style={styles.messageContainer}>
 					{loadingMessage}
 				</View>
