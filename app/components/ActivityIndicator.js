@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
-import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../common/StyleConstants'
+import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../common/StyleConstants'
 import { connect } from 'react-redux'
-import { UserDataActionTypes } from '../../common/Enums'
+import { UserDataActionTypes } from '../common/Enums'
 
 const { 
 		UPDATING_USER_PROFILE_DATA,

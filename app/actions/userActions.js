@@ -11,7 +11,8 @@ const {
 		UPDATING_USER_PROFILE_DATA,
 		USER_PROFILE_DATA_UPDATED,
 		USER_PROFILE_DATA_UPDATING_ERROR,
-		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED
+		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED,
+		EMPTY_USER_PROFILE_DATA_RECEIVED
 	  } = UserDataActionTypes
 
 export function setUserGender(gender){
@@ -48,15 +49,20 @@ export function getProfileDate(){
 			const userProfileData = firebase.database().ref('/UserProfile/' + user.uid)
 			userProfileData.once('value')
 			.then((snapshot)=>{
-				console.log(snapshot.val().displayName);
-				dispatch({
-					type: USER_PROFILE_DATA_RECEIVED , 
-					payload: {
-								displayName: snapshot.val().displayName, 
-								gender: snapshot.val().gender, 
-								dateOfBirth: snapshot.val().dateOfBirth
-							}
-				});
+				//console.log(snapshot.val().displayName);
+				if(snapshot.val())
+					dispatch({
+						type: USER_PROFILE_DATA_RECEIVED , 
+						payload: {
+									displayName: snapshot.val().displayName, 
+									gender: snapshot.val().gender, 
+									dateOfBirth: snapshot.val().dateOfBirth
+								}
+					});
+				else
+					dispatch({
+						type: EMPTY_USER_PROFILE_DATA_RECEIVED
+					});
 			})
 			.catch((error) => {
 				dispatch({

@@ -6,7 +6,7 @@ import * as LoginActions from '../../actions/loginActions'
 import * as userActions from '../../actions/userActions'
 import {UserLoginActionTypes} from '../../common/Enums'
 
-import Button from '../common/controlls/Button'
+import Button from '../../components/controls/Button'
 
 import {FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties} from '../../common/StyleConstants'
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet } from 'react-native'
-import { CommonProperties } from '../../../common/StyleConstants'
+import { CommonProperties } from '../../common/StyleConstants'
 import Svg,{
     Circle,
     Ellipse,

@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, TouchableOpacity, Text, StyleSheet, ScrollView} from 'react-native'
 import {connect} from 'react-redux'
-import Button from '../common/controlls/Button'
+import Button from '../../components/controls/Button'
 
 import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../common/StyleConstants'
 

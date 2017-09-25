@@ -2,11 +2,10 @@ import React from 'react'
 import { Text, TextInput, View, StyleSheet, Image, ScrollView, Animated, Easing, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
-import LogoIcon from '../../common/icons/Logo'
-import Button from '../../common/controlls/Button'
-import { OverlayProgressStatus } from '../../../common/Enums'
-import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties,Colors } from '../../../common/StyleConstants'
-import { inputEmail, inputPassword, loginUser, createAccount, loginEmptyInputError, enableLoginInput, showCreateAccount } from '../../../actions/loginActions'
+import LogoIcon from './icons/Logo'
+import { OverlayProgressStatus } from '../common/Enums'
+import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties,Colors } from '../common/StyleConstants'
+import { inputEmail, inputPassword, loginUser, createAccount, loginEmptyInputError, enableLoginInput, showCreateAccount } from '../actions/loginActions'
 
 const { 
 		LOADINGDATA,
@@ -120,8 +119,8 @@ export default class test extends React.Component{
 					toValue: 1,
 					duration: 600,
 					easing: Easing.linear,
-					useNativeDriver: true,
-					delay: 100
+					//useNativeDriver: true,
+					delay: 0
 				}
 			).start(() => this.loadingAnimation())
 	}

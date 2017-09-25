@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import firebase from 'firebase'
 import moment from 'moment'
 import { UserDataActionTypes, OverlayProgressStatus } from '../../common/Enums'
-import CalendarIcon from '../common/icons/Calendar'
-import GenderIcon from '../common/icons/Gender'
-import Button from '../common/controlls/Button'
-import OverlayMessages from '../common/controlls/OverlayMessages'
+import CalendarIcon from '../../components/icons/Calendar'
+import GenderIcon from '../../components/icons/Gender'
+import Button from '../../components/controls/Button'
+import OverlayMessages from '../../components/OverlayMessages'
 
 import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties, Colors } from '../../common/StyleConstants'
 
@@ -19,6 +19,7 @@ const {
 		USER_PROFILE_DATA_UPDATED,
 		USER_PROFILE_DATA_UPDATING_ERROR,
 		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED,
+		EMPTY_USER_PROFILE_DATA_RECEIVED,
 
 		REQUESTING_USER_PROFILE_DATA,
 		USER_PROFILE_DATA_RECEIVED,
@@ -50,13 +51,14 @@ class UserProfile extends React.Component{
 		this.currentUser = {};
 	}
 
+	componentWillMount(){
+		this.onLayoutChnage()
+	}
+
 	componentDidMount(){
 		this.currentUser = firebase.auth().currentUser;
 		// console.log("Name Is", currentUser.displayName);
-		//this.props.dispatch(profileActions.setName(this.currentUser.displayName));
-
-
-		
+		//this.props.dispatch(profileActions.setName(this.currentUser.displayName));	
 	}
 
 
@@ -146,12 +148,12 @@ class UserProfile extends React.Component{
 			fontSize: ScaleProperties.fontSizeX,
 			color: FormElementProperties.buttonTextColor,
 		}
-
+		console.log('STAAAAAAAAAAAAATUSSSSSSSSSSSSSSSSS, ', this.props.stateDescription)
 		let overlayElement = <Text></Text>
 		let passingState = "DATALOADED"
-		if( !this.props.displayName ) {
+		if( !this.props.displayName && ( this.props.stateDescription === REQUESTING_USER_PROFILE_DATA || this.props.stateDescription === USER_PROFILE_DATA_RECEIVED ) ) {
 			passingState = LOADINGDATA
-			overlayElement = <OverlayMessages stateDescription={LOADINGDATA}/>
+			overlayElement = <OverlayMessages stateDescription={LOADINGDATA} overlaySize={{height: this.props.layoutHeight, width: this.props.layoutWidth}}/>
 		} else if( this.props.stateDescription === USER_PROFILE_DATA_UPDATED_AND_NOTIFIED ){
 			overlayElement = <Text></Text>
 		} else if ( 
@@ -164,19 +166,21 @@ class UserProfile extends React.Component{
 			//overlayElement = <OverlayMessages stateDescription={}/>
 			if (this.props.stateDescription === USER_PROFILE_DATA_UPDATED || this.props.stateDescription === USER_PROFILE_DATA_RECEIVED) {
 				setTimeout(()=>{
-					console.log("SET TIMEOUT CALLED")
 					this.props.dispatch(profileActions.updateNotified())
+				},2500)
+			} else if (this.props.stateDescription === USER_PROFILE_DATA_RECEIVING_ERROR ) {
+				setTimeout(()=>{
+					this.handleClose()
 				},2500)
 			}
 			overlayElement = <OverlayMessages stateDescription={passingState} overlaySize={{height: this.props.layoutHeight, width: this.props.layoutWidth}}/>
 		}  
 
 		
-		if(this.props.gender!=="Gender"){
+		if( this.props.gender !== "Gender" ){
 			styleAfterEditGender = {color: FormElementProperties.textInputTextColor}
-			console.log("Inside IF")
 		}
-		if(this.props.dateOfBirth!=="Date Of Birth")
+		if( this.props.dateOfBirth !== "Date Of Birth" )
 			styleAfterEditDoB = {color: FormElementProperties.textInputTextColor}
 
 

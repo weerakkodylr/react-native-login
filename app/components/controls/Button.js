@@ -1,6 +1,6 @@
 import React from 'react'
 import {View, TouchableOpacity, Text} from 'react-native'
-import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../../common/StyleConstants'
+import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../common/StyleConstants'
 
 
 const inputButton = {

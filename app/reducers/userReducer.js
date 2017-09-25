@@ -10,7 +10,8 @@ const {
 		UPDATING_USER_PROFILE_DATA,
 		USER_PROFILE_DATA_UPDATED,
 		USER_PROFILE_DATA_UPDATING_ERROR,
-		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED
+		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED,
+		EMPTY_USER_PROFILE_DATA_RECEIVED
 	  } = UserDataActionTypes
 
 const defaultState = {
@@ -27,19 +28,19 @@ export default function reducer (state = defaultState, action) {
 
 	switch (action.type) {
 		case SET_USER_GENDER : {
-			state = {...state, gender: action.payload, stateDescription: action.type}
+			state = {...state, gender: action.payload, stateDescription: action.type, error: undefined}
 			break;
 		}
 		case SET_USER_DISPLAY_NAME : {
-			state = {...state, displayName: action.payload, stateDescription: action.type}
+			state = {...state, displayName: action.payload, stateDescription: action.type, error: undefined}
 			break;
 		}
 		case SET_USER_BIRTHDAY: {
-			state = {...state, dateOfBirth: action.payload, stateDescription: action.type}
+			state = {...state, dateOfBirth: action.payload, stateDescription: action.type, error: undefined}
 			break
 		}
 		case UPDATING_USER_PROFILE_DATA: {
-			state = {...state, stateDescription: action.type}
+			state = {...state, stateDescription: action.type, error: undefined}
 			break
 		}
 		case USER_PROFILE_DATA_UPDATED: {
@@ -51,12 +52,24 @@ export default function reducer (state = defaultState, action) {
 			break
 		}
 		case USER_PROFILE_DATA_RECEIVED: {
-			state = {...state, displayName: action.payload.displayName, gender: action.payload.gender, dateOfBirth: action.payload.dateOfBirth, stateDescription: action.type}
+			state = {...state, displayName: action.payload.displayName, gender: action.payload.gender, dateOfBirth: action.payload.dateOfBirth, stateDescription: action.type, error: undefined}
 			break;
 		}
 		case USER_PROFILE_DATA_UPDATED_AND_NOTIFIED: {
 			state = {...state, stateDescription: action.type}
 			break
+		}
+		case USER_PROFILE_DATA_RECEIVING_ERROR: {
+			state = {...state, stateDescription: action.type, error: action.payload}
+			break
+		}
+		case REQUESTING_USER_PROFILE_DATA: {
+			state = {...state, ...defaultState, stateDescription: action.type}
+			break	
+		}
+		case EMPTY_USER_PROFILE_DATA_RECEIVED: {
+			state = {...state, ...defaultState, stateDescription: action.type}
+			break	
 		}
 	}
 
