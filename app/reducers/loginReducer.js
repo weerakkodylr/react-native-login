@@ -1,4 +1,4 @@
-import { UserLoginProcessStatus } from '../common/Enums'
+import { UserLoginActionTypes } from '../common/Enums'
 
 const { 
 		AUTHENTICATING, 
@@ -18,7 +18,7 @@ const {
 		LOGIN_PASSWORD_INPUT,
 		SHOW_CREATE_ACCOUNT,
 		ENABLE_LOGIN
-	  } = UserLoginProcessStatus
+	  } = UserLoginActionTypes
 
 const defaultState = {
 	inputEmail: '',
@@ -45,7 +45,7 @@ export default function reducer (state = defaultState, action) {
 			break;	
 		}
 		case AUTHENTICATED : {
-			state = { ...state, stateDescription: action.type, userVarificationStatus: (action.payload.emailVerified? EMAIL_VARIFIED : EMAIL_NOT_VARIFIED )};
+			state = { ...state, stateDescription: action.type, userVarificationStatus: action.payload.emailVerified};
 			break;	
 		}
 		case USER_ACCOUNT_CREATING: {
@@ -69,11 +69,11 @@ export default function reducer (state = defaultState, action) {
 			break;	
 		}
 		case RESENT_VARIFICATION : {
-			state = { ...state, userVarificationStatus: action.type }
+			state = { ...state, stateDescription: action.type }
 			break
 		}
 		case RESENDING_VARIFICATION : {
-			state = { ...state, userVarificationStatus: action.type }
+			state = { ...state, stateDescription: action.type }
 			break
 		}
 		case USER_LOGGING_OUT : {

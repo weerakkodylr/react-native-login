@@ -1,6 +1,6 @@
 import {Dimensions} from 'react-native'
 
-const colors = {
+export const Colors = {
 	darkYellow : '#FFF266',
 	white : '#FFFFFF',
 	gray : '#B0C1AA',
@@ -26,35 +26,46 @@ const scaleRatio = baseScaleVlue / guidelineBaseWidth;
 
 
 export const ScaleProperties = {
-	fontSizeXX: 50 * scaleRatio,
+	fontSizeXX: 30 * scaleRatio,
+	fontSizeXXX: 50 * scaleRatio,
 	fontSizeX: 22 * scaleRatio,
 	logoWidth: 350 * scaleRatio,
-	logoHeight: 100 * scaleRatio
+	logoHeight: 100 * scaleRatio,
+
+	//gameLaunchBoxSizeX: 50 * scaleRatio,
+	//gameLaunchBoxSizeXX: 100 * scaleRatio,
+	gameLaunchBoxSizeX: baseScaleVlue/2 - 30,
+	gameLaunchBoxSizeXX: baseScaleVlue/2 - 20,
+	gameLaunchBoxSizeXXX: baseScaleVlue/2 - 10,
 }
 
 export const FormElementProperties = {
 	buttonBorderWidth: 2,
 	borderRadius: 5,
-	textInputSelectionColor: colors.darkYellow,
-	textInputPlaceholderColor: colors.gray,
-	textInputTextColor: colors.darkYellow,
-	buttonBackgroundColor: colors.darkGreen,
-	buttonTextColor: colors.darkYellow,
+	textInputSelectionColor: Colors.darkYellow,
+	textInputPlaceholderColor: Colors.gray,
+	textInputTextColor: Colors.darkYellow,
+	buttonBackgroundColor: Colors.darkGreen,
+	buttonTextColor: Colors.darkYellow,
 
 	
 }
 
 export const ContainerProperties = {
-	backgroundColor: colors.lightGreen
+	backgroundColor: Colors.lightGreen
 }
 
 export const CommonProperties = {
-	logoColor: colors.darkYellow,
-	disabledColor : colors.gray,
-	borderColor: colors.darkYellow,
-	textColor: colors.darkYellow,
-	buttonMinHeightX : 60,
-	buttonMinHeightXX : 80,
+	backgroundColor: Colors.lightGreen,
+	logoColor: Colors.darkYellow,
+	disabledColor : Colors.gray,
+	borderColor: Colors.darkYellow,
+	borderWidth: 2,
+	textColor: Colors.darkYellow,
+	inputElementMinHeightX : 60,
+	inputElementMinHeightXX : 80,
 	elementMarginBottom: 10,
-	screenPadding: 10
+	screenPadding: 10,
+	screenWidth: width,
+	screenHeight: height
 }

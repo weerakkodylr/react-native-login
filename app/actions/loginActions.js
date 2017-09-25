@@ -1,5 +1,5 @@
 import firebase from 'firebase'
-import { UserLoginProcessStatus } from '../common/Enums'
+import { UserLoginActionTypes } from '../common/Enums'
 
 
 const { 
@@ -20,7 +20,7 @@ const {
 		LOGIN_PASSWORD_INPUT,
 		SHOW_CREATE_ACCOUNT,
 		ENABLE_LOGIN
-	  } = UserLoginProcessStatus
+	  } = UserLoginActionTypes
 
 export function inputEmail(email){
 	return {
@@ -114,6 +114,7 @@ export function loginUser(email,password,firebase){
 		.catch((error) => {
 			dispatch({
 				type: AUTHENTICATION_ERROR, 
+				payload: error
 			});
 		});
 	}
