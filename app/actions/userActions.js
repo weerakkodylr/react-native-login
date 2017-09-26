@@ -12,7 +12,9 @@ const {
 		USER_PROFILE_DATA_UPDATED,
 		USER_PROFILE_DATA_UPDATING_ERROR,
 		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED,
-		EMPTY_USER_PROFILE_DATA_RECEIVED
+		EMPTY_USER_PROFILE_DATA_RECEIVED,
+		SET_USER_EMAIL,
+		ENABLE_UPDATE
 	  } = UserDataActionTypes
 
 export function setUserGender(gender){
@@ -29,10 +31,24 @@ export function setName(gender){
 	}
 }
 
+export function setEmail(email){
+	return {
+		type: SET_USER_EMAIL,
+		payload: email
+	}
+}
+
 export function setBirthday(dateOfBirth){
 	return {
 		type: SET_USER_BIRTHDAY,
 		payload: dateOfBirth
+	}
+}
+
+export function enableUpdate(enableStatus){
+	return {
+		type: ENABLE_UPDATE,
+		payload: enableStatus
 	}
 }
 

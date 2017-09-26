@@ -78,17 +78,27 @@ class UserProfile extends React.Component{
 		  });
 		  if (action !== DatePickerAndroid.dismissedAction) {
 		    // Selected year, month (0-11), day
-		    const selectedDate = moment({y:year,M:(month-1),d:day});
+		    const selectedDate = moment({y:year,M:(month-1),d:day})
 		    //console.log(year + '-' + month + '-' + day)
-		    this.props.dispatch(profileActions.setBirthday(selectedDate.format("MM/DD/YYYY")));
+		    this.props.dispatch(profileActions.setBirthday(selectedDate.format("MM/DD/YYYY")))
 		  }
 		} catch ({code, message}) {
-		  console.warn('Cannot open date picker', message);
+		  console.warn('Cannot open date picker', message)
 		}
 	}
 
 	changeDisplayName = (displayName) => {
-		this.props.dispatch(profileActions.setName(displayName));
+		this.props.dispatch(profileActions.setName(displayName))
+
+		const loginButtonStatus = this.checkEnableUpdate(displayName,undefined);
+  		this.props.dispatch(profileActions.enableUpdate(loginButtonStatus))
+	}
+
+	changeEmail = (email) => {
+		this.props.dispatch(profileActions.setEmail(email))
+
+		const loginButtonStatus = this.checkEnableUpdate(undefined,email)
+  		this.props.dispatch(profileActions.enableUpdate(loginButtonStatus))
 	}
 
 	selectGender = () => {
@@ -117,6 +127,19 @@ class UserProfile extends React.Component{
 		});
 	}
 
+	validateEmail(email){
+		const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		return regEx.test(email);
+	}
+
+	checkEnableUpdate(displayName = this.props.displayName, email = this.props.email){
+		this.validateEmail(email)
+		if(email!=="" &&  displayName!=="" && this.validateEmail(email))
+			return true;
+		else
+			return false;
+	}
+
 	onLayoutChnage(){
 		const {height, width} = Dimensions.get('window');
 		this.props.dispatch(layoutActions.setLayoutDimentions(width, height))
@@ -124,6 +147,8 @@ class UserProfile extends React.Component{
 
 	render(){
 		//console.log(this.props)
+		const conditionalBorderColorUpdate = (this.props.updateButtonDisabled? CommonProperties.disabledColor : CommonProperties.borderColor);
+		const conditionalTextColorUpdate = (this.props.updateButtonDisabled? CommonProperties.disabledColor : FormElementProperties.buttonTextColor)
 
 		let styleAfterEditGender = {}
 		let styleAfterEditDoB = {}
@@ -148,7 +173,7 @@ class UserProfile extends React.Component{
 			fontSize: ScaleProperties.fontSizeX,
 			color: FormElementProperties.buttonTextColor,
 		}
-		console.log('STAAAAAAAAAAAAATUSSSSSSSSSSSSSSSSS, ', this.props.stateDescription)
+		//console.log('STAAAAAAAAAAAAATUSSSSSSSSSSSSSSSSS, ', this.props.stateDescription)
 		let overlayElement = <Text></Text>
 		let passingState = "DATALOADED"
 		if( !this.props.displayName && ( this.props.stateDescription === REQUESTING_USER_PROFILE_DATA || this.props.stateDescription === USER_PROFILE_DATA_RECEIVED ) ) {
@@ -200,6 +225,17 @@ class UserProfile extends React.Component{
 								onChangeText={this.changeDisplayName.bind(this)}>
 							</TextInput>
 						</View>
+						<View style={styles.inputContainer}>
+							<TextInput 
+								style={styles.inputText} 
+								selectionColor={FormElementProperties.textInputSelectionColor} 
+								underlineColorAndroid={FormElementProperties.textInputSelectionColor} 
+								placeholder={"Email"} 
+								placeholderTextColor={FormElementProperties.textInputPlaceholderColor}  
+								value={this.props.email}  
+								onChangeText={this.changeEmail.bind(this)}>
+							</TextInput>
+						</View>
 						<View style={styles.customInputContainer}>
 							<View style={{flexDirection: 'row',flex:1}}>
 								<TouchableOpacity onPress={this.selectGender.bind(this)} style={{justifyContent:'flex-end',flex:1}}>
@@ -226,9 +262,9 @@ class UserProfile extends React.Component{
 						</View>
 						<View>
 							<Button 
-								buttonStyle={{marginBottom:10}}
-								buttonTextStyle={{}}
-								isDisabled={false}
+								buttonStyle={{marginBottom:10, borderColor: conditionalBorderColorUpdate, }}
+								buttonTextStyle={{color: conditionalTextColorUpdate}}
+								isDisabled={this.props.updateButtonDisabled}
 								buttonText={"Update"} 
 								eventHandler={this.handleUpdate.bind(this)}>
 							</Button>
@@ -260,12 +296,13 @@ const MessageOverlay = (props) => (
 
 const storeProps = (store)=>({
     displayName : store.user.displayName,
-    email : store.user.email,
+    email : store.user.email || store.login.inputEmail,
     gender : store.user.gender,
     dateOfBirth: store.user.dateOfBirth,
     stateDescription: store.user.stateDescription,
     layoutWidth: store.layout.layoutWidth,
     layoutHeight: store.layout.layoutHeight,
+    updateButtonDisabled: store.user.updateButtonDisabled,
     error: store.user.error
   })
 

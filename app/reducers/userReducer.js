@@ -11,15 +11,18 @@ const {
 		USER_PROFILE_DATA_UPDATED,
 		USER_PROFILE_DATA_UPDATING_ERROR,
 		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED,
-		EMPTY_USER_PROFILE_DATA_RECEIVED
+		EMPTY_USER_PROFILE_DATA_RECEIVED,
+		SET_USER_EMAIL,
+		ENABLE_UPDATE
 	  } = UserDataActionTypes
 
 const defaultState = {
 	displayName: undefined,
-	email: "",
+	email: undefined,
 	gender: 'Gender',
 	dateOfBirth: 'Date Of Birth',
 	stateDescription: undefined,
+	updateButtonDisabled: false,
 	error: undefined,
 
 }
@@ -52,7 +55,7 @@ export default function reducer (state = defaultState, action) {
 			break
 		}
 		case USER_PROFILE_DATA_RECEIVED: {
-			state = {...state, displayName: action.payload.displayName, gender: action.payload.gender, dateOfBirth: action.payload.dateOfBirth, stateDescription: action.type, error: undefined}
+			state = {...state, displayName: action.payload.displayName, gender: action.payload.gender, dateOfBirth: action.payload.dateOfBirth, updateButtonDisabled: (action.payload.displayName === ''), stateDescription: action.type, error: undefined}
 			break;
 		}
 		case USER_PROFILE_DATA_UPDATED_AND_NOTIFIED: {
@@ -68,8 +71,16 @@ export default function reducer (state = defaultState, action) {
 			break	
 		}
 		case EMPTY_USER_PROFILE_DATA_RECEIVED: {
-			state = {...state, ...defaultState, stateDescription: action.type}
+			state = {...state, ...defaultState, stateDescription: action.type, updateButtonDisabled: true }
 			break	
+		}
+		case SET_USER_EMAIL: {
+			state = {...state, email: action.payload, stateDescription: action.type, error: undefined}
+			break		
+		}
+		case ENABLE_UPDATE: {
+			state = {...state, updateButtonDisabled: !action.payload, stateDescription: action.type, error: undefined}
+			break			
 		}
 	}
 
