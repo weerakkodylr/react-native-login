@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+//import firebase from 'firebase'
 import { UserLoginActionTypes } from '../common/Enums'
 
 
@@ -19,7 +19,12 @@ const {
 		LOGIN_EMAIL_INPUT,
 		LOGIN_PASSWORD_INPUT,
 		SHOW_CREATE_ACCOUNT,
-		ENABLE_LOGIN
+		ENABLE_LOGIN,
+		SHOW_FORGOT_PASSWORD,
+		ENABLE_CREATE_ACCOUNT,
+		PASSWORD_RESET_EMAIL_SENDING,
+		PASSWORD_RESET_EMAIL_SENT,
+		PASSWORD_RESET_EMAIL_SENDING_ERROR,
 	  } = UserLoginActionTypes
 
 export function inputEmail(email){
@@ -127,10 +132,48 @@ export function showCreateAccount(showState){
 	}
 }
 
-export function enableLoginInput(enableStatus){
+export function enableLoginButton(enableStatus){
 	
 	return {
 		type: ENABLE_LOGIN,
 		payload: enableStatus
+	}
+}
+
+export function enableCreateAccount(enableStatus){
+	
+	return {
+		type: ENABLE_CREATE_ACCOUNT,
+		payload: enableStatus
+	}
+}
+
+export function showForgotPassword (showState) {
+	return {
+		type: SHOW_FORGOT_PASSWORD,
+		payload: showState
+	}
+}
+
+export function forgotPassword (email, firebase) {
+	return function(dispatch){
+		dispatch({
+			type: PASSWORD_RESET_EMAIL_SENDING
+		})
+
+		let auth = firebase.auth();
+		let emailAddress = email;
+
+		auth.sendPasswordResetEmail(emailAddress)
+		.then(() => {
+		  	dispatch({
+				type: PASSWORD_RESET_EMAIL_SENT
+			})
+		}).catch((error) => {
+		  	dispatch({
+				type: PASSWORD_RESET_EMAIL_SENDING_ERROR,
+				payload: error
+			})
+		});
 	}
 }

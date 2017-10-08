@@ -6,14 +6,25 @@ import LogoIcon from '../../components/icons/Logo'
 import Button from '../../components/controls/Button'
 import { UserLoginActionTypes } from '../../common/Enums'
 import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../common/StyleConstants'
-import { inputEmail, inputPassword, loginUser, createAccount, loginEmptyInputError, enableLoginInput, showCreateAccount } from '../../actions/loginActions'
+import { inputEmail, inputPassword, loginUser, createAccount, loginEmptyInputError, enableLoginButton, showCreateAccount, enableCreateAccount, showForgotPassword, forgotPassword } from '../../actions/loginActions'
 
-const { AUTHENTICATING } = UserLoginActionTypes
+const { 
+	AUTHENTICATING,
+	USER_LOGGED_OUT,
+	USER_ACCOUNT_CREATING,
+	PASSWORD_RESET_EMAIL_SENDING,
+	PASSWORD_RESET_EMAIL_SENT,
+	PASSWORD_RESET_EMAIL_SENDING_ERROR 
+} = UserLoginActionTypes
 
 class Login extends React.Component{
 
 	constructor(){
 		super();
+		this.state = {
+			forgotPasswordView: false,
+			forgotPasswordButtonDisabled: true
+		}
 		this.spinValue = new Animated.Value(0)
 		this.moveAway = new Animated.Value(1)
 		this.passwordConfirmation = ""
@@ -21,6 +32,36 @@ class Login extends React.Component{
 
 	componentDidMount(){
 		this.logoSpin()
+	}
+
+	//This was needed since I tried to keep some ui login within the component state.
+	//So then the reseting to default state is cannot be done in 1 go from the reduce since component also owns some part of the state
+	componentWillReceiveProps(nextProp){
+		if(nextProp.stateDescription !== this.props.stateDescription && nextProp.stateDescription === USER_LOGGED_OUT)
+			this.setState({forgotPasswordView: false, forgotPasswordButtonDisabled: true})
+	}
+
+	componentWillMount(){
+		this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+	}
+
+	onNavigatorEvent(event) {
+		//To remove the loader from screen stack when comming from a back button
+	    switch(event.id) {
+	    	case 'willAppear':
+	    		this.props.navigator.pop({
+				  animated: true, // does the pop have transition animation or does it happen immediately (optional)
+				  animationType: 'fade', // 'fade' (for both) / 'slide-horizontal' (for android) does the pop have different transition animation (optional)
+				});
+	    		console.log('Appear THE LOGIN SCREEN')
+	       		break;
+	      	case 'didAppear':
+	        	break;
+	      	case 'willDisappear':
+	        	break;
+	      	case 'didDisappear':
+	        	break;
+		}
 	}
 
 	logoSpin(){
@@ -58,9 +99,17 @@ class Login extends React.Component{
 		return regEx.test(email);
 	}
 
-	checkEnableLoginInput(email = this.props.email, password = this.props.password){
+	checkEnableLoginButton(email = this.props.email, password = this.props.password){
 		this.validateEmail(email)
-		if(email!=="" &&  password!=="" && this.validateEmail(email) && (password===this.passwordConfirmation || !this.props.createAccount))
+		if(email!=="" &&  password!=="" && this.validateEmail(email))
+			return true;
+		else
+			return false;
+	}
+
+	checkEnableCreateAccountButton(email = this.props.email, password = this.props.password){
+		
+		if(email!=="" &&  password!=="" && this.validateEmail(email) && password===this.passwordConfirmation && this.props.createAccount)
 			return true;
 		else
 			return false;
@@ -69,15 +118,20 @@ class Login extends React.Component{
 	handleEmailInput (textValue){
   		this.props.dispatch(inputEmail(textValue));
 
-  		const loginButtonStatus = this.checkEnableLoginInput(textValue,undefined);
-  		this.props.dispatch(enableLoginInput(loginButtonStatus))
+  		const loginButtonStatus = this.props.createAccount? this.checkEnableCreateAccountButton() : this.checkEnableLoginButton(textValue,undefined);
+  		this.props.dispatch(enableLoginButton(loginButtonStatus))
+
+  		if(this.validateEmail(textValue))
+  			this.setState({forgotPasswordButtonDisabled: false})
+  		else
+  			this.setState({forgotPasswordButtonDisabled: true})
   	}
 
   	handlePasswordInput (textValue){
   		this.props.dispatch(inputPassword(textValue));	
 
-  		const loginButtonStatus = this.checkEnableLoginInput(undefined,textValue);
-  		this.props.dispatch(enableLoginInput(loginButtonStatus))
+  		const loginButtonStatus = this.props.createAccount? this.checkEnableCreateAccountButton() : this.checkEnableLoginButton(undefined,textValue);
+  		this.props.dispatch(enableLoginButton(loginButtonStatus))
   	}
 
   	handleLoginUser() {
@@ -90,8 +144,8 @@ class Login extends React.Component{
   	handlePasswordConfirmation(textValue){
   		this.passwordConfirmation = textValue
 
-  		const loginButtonStatus = this.checkEnableLoginInput();
-  		this.props.dispatch(enableLoginInput(loginButtonStatus))
+  		const loginButtonStatus = this.checkEnableCreateAccountButton();
+  		this.props.dispatch(enableCreateAccount(loginButtonStatus))
   	}
 
   	goToCreateAccount(){
@@ -106,28 +160,43 @@ class Login extends React.Component{
 			
   	}
 
+  	forgotPassword(){
+  		if(!this.state.forgotPasswordView)
+			this.setState({forgotPasswordView: true})
+		else{
+			const email = this.props.email
+			this.props.dispatch(forgotPassword(email,firebase));
+		}
+  	}
+
   	goBackToLogin(){
-		this.props.dispatch(showCreateAccount(false));
+		this.props.dispatch(showCreateAccount(false))
+		this.setState({forgotPasswordView: false, forgotPasswordButtonDisabled: true})
+		//this.props.dispatch(showForgotPassword(false))
+
   	}
 
 	render(){
-		const isCreateAccount = this.props.createAccount || false;
+		const isCreateAccount = this.props.createAccount || false
+		const isForgotPassword = this.state.forgotPasswordView || false
 		const conditionalBorderColorLogin = (this.props.loginButtonDisabled? CommonProperties.disabledColor : CommonProperties.borderColor);
 		const conditionalTextColorLogin = (this.props.loginButtonDisabled? CommonProperties.disabledColor : FormElementProperties.buttonTextColor)
-		const conditionalBorderColorCreateAccount = (this.props.loginButtonDisabled && isCreateAccount? CommonProperties.disabledColor : CommonProperties.borderColor)
-		const conditionalTextColorCreateAccount = (this.props.loginButtonDisabled && isCreateAccount? CommonProperties.disabledColor : FormElementProperties.buttonTextColor)
+		const conditionalBorderColorCreateAccount = (this.props.createButtonDisabled && isCreateAccount? CommonProperties.disabledColor : CommonProperties.borderColor)
+		const conditionalTextColorCreateAccount = (this.props.createButtonDisabled && isCreateAccount? CommonProperties.disabledColor : FormElementProperties.buttonTextColor)
+		const conditionalBorderColorForgotPassword = (this.state.forgotPasswordButtonDisabled && isForgotPassword? CommonProperties.disabledColor : CommonProperties.borderColor)
+		const conditionalTextColorForgotPassword = (this.state.forgotPasswordButtonDisabled && isForgotPassword? CommonProperties.disabledColor : FormElementProperties.buttonTextColor)
 		const logoSpin = this.spinValue.interpolate({
 			inputRange: [0,1],
 			outputRange: ['0deg', '360deg']
 		})
 
-		let loginMessage = '';
+		let forgotPasswordText = 'Forgot Password?'
 		let loginButton = 	<View>
 								<Button 
 									buttonStyle={{borderColor: conditionalBorderColorLogin, marginBottom:10}}
 									buttonTextStyle={{color: conditionalTextColorLogin}}
 									isDisabled={this.props.loginButtonDisabled}
-									buttonText={"Login"} 
+									buttonText={(this.props.reAuthenticateButtonText? this.props.reAuthenticateButtonText : "Login")} 
 									eventHandler={this.handleLoginUser.bind(this)}>
 								</Button>
 							</View>
@@ -154,13 +223,53 @@ class Login extends React.Component{
 										</Button>
 									</View>
 
-		if(this.props.stateDescription === UserLoginActionTypes.AUTHENTICATING || this.props.stateDescription === UserLoginActionTypes.USER_ACCOUNT_CREATING ){
-			loginMessage = 'User Authenticating'
+		let createAccountButton = <View>
+									<Button 
+										buttonStyle={{borderColor: conditionalBorderColorCreateAccount, marginBottom:10}}
+										buttonTextStyle={{color: conditionalTextColorCreateAccount}}
+										eventHandler={this.goToCreateAccount.bind(this)} 
+										buttonText={"Create Account"} 
+										isDisabled={(isCreateAccount && this.props.createButtonDisabled)}>
+									</Button>
+								</View>	
+		let forgotPasswordButton = 	<View>
+										<Button 
+											buttonStyle={{marginBottom:10, borderColor: conditionalBorderColorForgotPassword}}
+											buttonTextStyle={{color:conditionalTextColorForgotPassword}}
+											isDisabled={this.state.forgotPasswordButtonDisabled && this.state.forgotPasswordView}
+											buttonText={forgotPasswordText} 
+											eventHandler={this.forgotPassword.bind(this)}>
+										</Button>
+									</View>
+
+		let loginLogo = <View style={styles.logoContainer}>
+							<View style={styles.logoContent}>
+								<Animated.View style={styles.logo}><LogoIcon /></Animated.View>
+								<Text style={styles.logoText}>PuzzlePRO</Text>
+							</View>
+						</View>
+
+		let passwordInput = <View style={styles.inputContainer}>
+								<TextInput 
+									selectionColor={FormElementProperties.textInputSelectionColor} 
+									underlineColorAndroid={FormElementProperties.textInputSelectionColor} 
+									secureTextEntry={true} 
+									autoCorrect={false} 
+									onChangeText={this.handlePasswordInput.bind(this)} 
+									style={styles.loginText} placeholder={"Password"} 
+									placeholderTextColor={FormElementProperties.textInputPlaceholderColor} 
+									value={this.props.password}>
+								</TextInput>
+							</View> 
+
+		console.log("CURRRRRRRRRENT STATUSSSSSSSSSS, ", this.props.stateDescription)
+		if(this.props.stateDescription === AUTHENTICATING || this.props.stateDescription === USER_ACCOUNT_CREATING || this.props.stateDescription === PASSWORD_RESET_EMAIL_SENDING){
 
 			this.props.navigator.push({
   				screen: 'FBLogin.LoginProgress',
   				title: '',
   				animated: 'false',
+  				passProps: {isReAuthenticate: (this.props.isReAuthenticate? true : false)},
 		  		animationType: 'slide-horizontal',
 		  		navigatorStyle: {navBarHidden:true}
   			})
@@ -168,11 +277,24 @@ class Login extends React.Component{
 
 		if(isCreateAccount){
 			loginButton = <View></View>
-
+			forgotPasswordButton = <View></View>
+		} else if(isForgotPassword){
+			confirmPassword = <View></View>
+			loginButton = <View></View>
+			createAccountButton = <View></View>
+			passwordInput = <View></View>
+			forgotPasswordText = 'Request passwrod reset'
 		} else {
 			confirmPassword = <View></View>
 			goBackToLoginButton = <View></View>
 		}
+
+		if(this.props.isReAuthenticate)
+			createAccountButton = <View></View>
+
+		if(this.props.reAuthenticateButtonText)
+			loginLogo = <View></View>
+
 
 
 		return(
@@ -181,12 +303,7 @@ class Login extends React.Component{
 				
 				<ScrollView style={styles.subContainer}>
 				<KeyboardAvoidingView behavior={"padding"} >
-					<View style={styles.logoContainer}>
-						<View style={styles.logoContent}>
-							<Animated.View style={styles.logo}><LogoIcon /></Animated.View>
-							<Text style={styles.logoText}>PuzzlePRO</Text>
-						</View>
-					</View>
+					{loginLogo}
 					<View style={styles.inputContainer}>
 						<TextInput 
 							onLayout={(event)=>{console.log("CCCCCCCCCCCCCCCCCCCCCCCCCC",event.nativeEvent.layout.width)}}  
@@ -199,29 +316,11 @@ class Login extends React.Component{
 							value={this.props.email}>
 						</TextInput>
 					</View>
-					<View style={styles.inputContainer}>
-						<TextInput 
-							selectionColor={FormElementProperties.textInputSelectionColor} 
-							underlineColorAndroid={FormElementProperties.textInputSelectionColor} 
-							secureTextEntry={true} 
-							autoCorrect={false} 
-							onChangeText={this.handlePasswordInput.bind(this)} 
-							style={styles.loginText} placeholder={"Password"} 
-							placeholderTextColor={FormElementProperties.textInputPlaceholderColor} 
-							value={this.props.password}>
-						</TextInput>
-					</View>
+					{passwordInput}
 					{confirmPassword}
 					{loginButton}
-					<View>
-						<Button 
-							buttonStyle={{borderColor: conditionalBorderColorCreateAccount, marginBottom:10}}
-							buttonTextStyle={{color: conditionalTextColorCreateAccount}}
-							eventHandler={this.goToCreateAccount.bind(this)} 
-							buttonText={"Create Account"} 
-							isDisabled={(isCreateAccount && this.props.loginButtonDisabled)}>
-						</Button>
-					</View>	
+					{createAccountButton}
+					{forgotPasswordButton}
 					{goBackToLoginButton}
 				</KeyboardAvoidingView>
 				</ScrollView>
@@ -239,7 +338,9 @@ const storeProps = (store)=>({
 	userVarificationStatus: store.login.userVarificationStatus,
     error: store.login.error,
     loginButtonDisabled: store.login.loginButtonDisabled,
-    createAccount: store.login.createAccount
+    createAccount: store.login.createAccount,
+    createButtonDisabled: store.login.createButtonDisabled,
+    //forgotPassword: store.login.forgotPassword,
   })
 
 export default connect(storeProps)(Login)

@@ -17,7 +17,12 @@ const {
 		LOGIN_EMAIL_INPUT,
 		LOGIN_PASSWORD_INPUT,
 		SHOW_CREATE_ACCOUNT,
-		ENABLE_LOGIN
+		ENABLE_LOGIN,
+		SHOW_FORGOT_PASSWORD,
+		ENABLE_CREATE_ACCOUNT,
+		PASSWORD_RESET_EMAIL_SENDING,
+		PASSWORD_RESET_EMAIL_SENT,
+		PASSWORD_RESET_EMAIL_SENDING_ERROR,
 	  } = UserLoginActionTypes
 
 const defaultState = {
@@ -27,7 +32,9 @@ const defaultState = {
 	stateDescription: USER_LOGGED_OUT,
 	userVarificationStatus: false,
 	loginButtonDisabled: true,
-	createAccount: false
+	createAccount: false,
+	createButtonDisabled: true,
+	forgotPassword: false
 }
 
 export default function reducer (state = defaultState, action) {
@@ -38,19 +45,19 @@ export default function reducer (state = defaultState, action) {
 		} 
 		case LOGIN_PASSWORD_INPUT : {
 			state = { ...state, inputPassword: action.payload, stateDescription: action.type }
-			break;	
+			break	
 		}
 		case AUTHENTICATING : {
 			state = { ...state, stateDescription: action.type };
-			break;	
+			break	
 		}
 		case AUTHENTICATED : {
-			state = { ...state, stateDescription: action.type, userVarificationStatus: action.payload.emailVerified};
-			break;	
+			state = { ...state, stateDescription: action.type, userVarificationStatus: action.payload.emailVerified, inputPassword:'', loginButtonDisabled: true};
+			break	
 		}
 		case USER_ACCOUNT_CREATING: {
 			state = { ...state, stateDescription: action.type};
-			break;	
+			break	
 		}
 		case USER_ACCOUNT_CREATED : {
 			state = { ...state, stateDescription: action.type};
@@ -62,11 +69,11 @@ export default function reducer (state = defaultState, action) {
 		}
 		case AUTHENTICATION_ERROR : {
 			state = { ...state, error: action.payload, stateDescription: action.type };
-			break;
+			break
 		}
 		case USER_ACCOUNT_CREATION_ERROR : {
 			state = { ...state, error: action.payload, stateDescription: action.type };
-			break;	
+			break	
 		}
 		case RESENT_VARIFICATION : {
 			state = { ...state, stateDescription: action.type }
@@ -93,8 +100,28 @@ export default function reducer (state = defaultState, action) {
 			break
 		}
 		case SHOW_CREATE_ACCOUNT : {
-			state = { ...state, createAccount: action.payload, inputEmail: "", inputPassword: "", loginButtonDisabled: true, stateDescription: action.type }
-			break;
+			state = { ...state, createAccount: action.payload, inputEmail: "", inputPassword: "", createButtonDisabled: true, stateDescription: action.type }
+			break
+		}
+		case ENABLE_CREATE_ACCOUNT : {
+			state = { ...state, createButtonDisabled: !action.payload, stateDescription: action.type }
+			break
+		}
+		case SHOW_FORGOT_PASSWORD : {
+			state = { ...state, forgotPassword: action.payload, inputEmail: "", inputPassword: "", loginButtonDisabled: true, stateDescription: action.type }
+			break
+		}
+		case PASSWORD_RESET_EMAIL_SENDING : {
+			state = { ...state, stateDescription: action.type }
+			break
+		}
+		case PASSWORD_RESET_EMAIL_SENT : {
+			state = { ...state, stateDescription: action.type }
+			break
+		}
+		case PASSWORD_RESET_EMAIL_SENDING_ERROR : {
+			state = { ...state, stateDescription: action.type, error: action.payload }
+			break
 		}
 	}
 

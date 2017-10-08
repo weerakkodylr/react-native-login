@@ -7,7 +7,7 @@ const inputButton = {
 			justifyContent: 'center',
 			alignItems: 'center',
 			backgroundColor: FormElementProperties.buttonBackgroundColor,
-			borderRadius: 10,
+			borderRadius: FormElementProperties.borderRadius,
 			borderWidth: FormElementProperties.buttonBorderWidth,
 			borderColor: CommonProperties.borderColor,
 			borderStyle: 'solid',
