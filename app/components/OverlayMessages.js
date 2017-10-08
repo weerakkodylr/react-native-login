@@ -12,7 +12,8 @@ const {
 		DATALOADED,
 		ERROR,
 		UPDATINGDATA,
-		DATAUPDATED
+		DATAUPDATED,
+		REAUTHENTICATE
 	  } = OverlayProgressStatus
 
 const indicatorMessages = {
@@ -20,7 +21,8 @@ const indicatorMessages = {
 	DATALOADED: "Successfully Loaded.",
 	ERROR: "Error Occured.",
 	UPDATINGDATA: "Updating Data.",
-	DATAUPDATED: "Successfully Updated."
+	DATAUPDATED: "Successfully Updated.",
+	REAUTHENTICATE: "Please login again and perform this action."
 }
 
 export default class test extends React.Component{
@@ -50,7 +52,7 @@ export default class test extends React.Component{
 			this.loadingAnimation()
 		} else if( stateDescription === DATAUPDATED || stateDescription === DATALOADED ){
 			this.successAnimation()
-		} else if ( stateDescription === ERROR) {
+		} else if ( stateDescription === ERROR || stateDescription === REAUTHENTICATE) {
 			this.errorAnimation()
 		}
 	}
@@ -199,7 +201,7 @@ export default class test extends React.Component{
 			 }}>
 					{indicatorIcon}
 					<View style={{justifyContent:'center', alignItems:'center', marginLeft:5, marginRight:5, marginBottom:5,transform:[{translateY:0}] }}>
-						<Text style={{color: Colors.darkYellow, fontSize: ScaleProperties.fontSizeX }}>{indicatorMessages[stateDescription]}</Text>
+						<Text style={{color: Colors.darkYellow, fontSize: ScaleProperties.fontSizeX, textAlign:'center'}}>{indicatorMessages[stateDescription]}</Text>
 					</View>
 				</View>
 			</View>

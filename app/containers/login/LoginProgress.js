@@ -27,7 +27,10 @@ const {
 		LOGIN_EMAIL_INPUT,
 		LOGIN_PASSWORD_INPUT,
 		SHOW_CREATE_ACCOUNT,
-		ENABLE_LOGIN
+		ENABLE_LOGIN,
+		PASSWORD_RESET_EMAIL_SENDING,
+		PASSWORD_RESET_EMAIL_SENT,
+		PASSWORD_RESET_EMAIL_SENDING_ERROR,
 	  } = UserLoginActionTypes
 
 class LoginProgress extends React.Component{
@@ -179,8 +182,7 @@ class LoginProgress extends React.Component{
 			  animated: true, // does the popToRoot have transition animation or does it happen immediately (optional)
 			  animationType: 'fade', // 'fade' (for both) / 'slide-horizontal' (for android) does the popToRoot have different transition animation (optional)
 			});		
-		}
-		else if ( this.props.stateDescription === AUTHENTICATION_ERROR || this.props.stateDescription === USER_ACCOUNT_CREATION_ERROR ) {
+		} else if ( this.props.stateDescription === AUTHENTICATION_ERROR || this.props.stateDescription === USER_ACCOUNT_CREATION_ERROR ) {
 
 			loadingMessage = <View style={styles.loadingContainer}>
 
@@ -197,6 +199,33 @@ class LoginProgress extends React.Component{
 
   			animatingStatus = false;
 
+		} else if ( this.props.stateDescription === PASSWORD_RESET_EMAIL_SENDING ) {
+			loadingMessage = <Text style={styles.loadingText}>Sending password reset request.</Text>
+
+  			animatingStatus = true;
+		} else if ( this.props.stateDescription === PASSWORD_RESET_EMAIL_SENT ) {
+			loadingMessage = <View>
+								<Text style={styles.loadingText}>Password reset link is sent to your email address.</Text>
+								<Button 
+									buttonStyle={{alignSelf:'stretch'}}
+									isDisabled={false}
+									buttonText={"Login with the new password."} 
+									eventHandler={this.logOut.bind(this)}>
+								</Button>
+							</View>
+
+  			animatingStatus = false;
+		} else if ( this.props.stateDescription === PASSWORD_RESET_EMAIL_SENDING_ERROR ) {
+			loadingMessage = <View>
+								<Text style={styles.loadingText}>Error occured when sending password reset link to your email address.</Text>
+								<Button 
+									buttonStyle={{alignSelf:'stretch'}}
+									isDisabled={false}
+									buttonText={"Back"} 
+									eventHandler={this.goBackToLogin.bind(this)}>
+								</Button>
+							</View>
+  			animatingStatus = false;
 		}
 
 		

@@ -1,7 +1,10 @@
 import React from 'react'
-import {View, TouchableOpacity, Text, StyleSheet, ScrollView} from 'react-native'
+import {View, TouchableOpacity, Text, StyleSheet, ScrollView, Dimensions} from 'react-native'
 import {connect} from 'react-redux'
 import Button from '../../components/controls/Button'
+import * as layoutActions from '../../actions/layoutActions'
+import * as LoginActions from '../../actions/loginActions'
+import firebase from 'firebase'
 
 import { FormElementProperties, ContainerProperties, ScaleProperties, CommonProperties } from '../../common/StyleConstants'
 
@@ -12,6 +15,10 @@ class Welcome extends React.Component{
 
 	handleLaunchGame(){
 
+	}
+
+	componentWillMount(){
+		this.onLayoutChnage()
 	}
 
 	handleProfile(){
@@ -26,10 +33,16 @@ class Welcome extends React.Component{
 	}
 
 	handleLogout(){
-		this.props.navigator.popToRoot({
-		  animated: true, // does the popToRoot have transition animation or does it happen immediately (optional)
-		  animationType: 'slide-horizontal', // 'fade' (for both) / 'slide-horizontal' (for android) does the popToRoot have different transition animation (optional)
-		});
+		this.props.dispatch(LoginActions.logOut(firebase));
+		// this.props.navigator.popToRoot({
+		//   animated: true, // does the popToRoot have transition animation or does it happen immediately (optional)
+		//   animationType: 'slide-horizontal', // 'fade' (for both) / 'slide-horizontal' (for android) does the popToRoot have different transition animation (optional)
+		// });
+	}
+
+	onLayoutChnage(){
+		const {height, width} = Dimensions.get('window');
+		this.props.dispatch(layoutActions.setLayoutDimentions(width, height))
 	}
 
 	render(){
@@ -39,14 +52,14 @@ class Welcome extends React.Component{
 
 		const launchButton = {
 			height: ScaleProperties.gameLaunchBoxSizeX,
-			width: ScaleProperties.gameLaunchBoxSizeX,
+			width: (this.props.layoutWidth - 20),
 			marginBottom:10,
 			borderRadius: FormElementProperties.borderRadius			
 		}
 
 		const controllButton = {
 			height: CommonProperties.inputElementMinHeightX,
-			width: ScaleProperties.gameLaunchBoxSizeXXX,
+			width: (this.props.layoutWidth/2 - 10),
 			marginLeft: 5,
 			marginRight: 5,
 		}
@@ -56,7 +69,7 @@ class Welcome extends React.Component{
 				<View style={styles.welcomeMessageContainer}>
 					<Text style={styles.welcomeMessageText}>Games</Text>
 				</View>
-				<ScrollView>
+				<ScrollView onLayout={this.onLayoutChnage.bind(this)}>
 					<View style={styles.gamesContainer}>
 						<Button 
 							buttonStyle={launchButton}
@@ -94,7 +107,9 @@ class Welcome extends React.Component{
 }
 
 const storeProps = (store) => ({
-	name : store.user.displayName
+	name : store.user.displayName,
+	layoutWidth: store.layout.layoutWidth,
+    layoutHeight: store.layout.layoutHeight,
 })
 
 export default connect(storeProps)(Welcome)

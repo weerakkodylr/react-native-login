@@ -20,8 +20,8 @@ const guidelineBaseHeight = 683.5;
 // console.log("SCREEN HEIGHT IS,", height);
 // console.log("SCREEN WEIGHT IS,", width);
 
-const baseScaleVlue = width < height ? width : height;
-const scaleRatio = baseScaleVlue / guidelineBaseWidth;
+const baseScaleValue = width < height ? width : height;
+const scaleRatio = baseScaleValue / guidelineBaseWidth;
 
 
 
@@ -34,9 +34,9 @@ export const ScaleProperties = {
 
 	//gameLaunchBoxSizeX: 50 * scaleRatio,
 	//gameLaunchBoxSizeXX: 100 * scaleRatio,
-	gameLaunchBoxSizeX: baseScaleVlue/2 - 30,
-	gameLaunchBoxSizeXX: baseScaleVlue/2 - 20,
-	gameLaunchBoxSizeXXX: baseScaleVlue/2 - 10,
+	gameLaunchBoxSizeX: baseScaleValue/4 - 30,
+	gameLaunchBoxSizeXX: baseScaleValue/4 - 20,
+	gameLaunchBoxSizeXXX: baseScaleValue/4 - 10,
 }
 
 export const FormElementProperties = {

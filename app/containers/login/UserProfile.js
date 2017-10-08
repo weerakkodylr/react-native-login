@@ -24,6 +24,7 @@ const {
 		REQUESTING_USER_PROFILE_DATA,
 		USER_PROFILE_DATA_RECEIVED,
 		USER_PROFILE_DATA_RECEIVING_ERROR,
+		USER_PROFILE_DATA_UPDATE_RE_AUTHENTICATION_REQUIRED
 	  } = UserDataActionTypes
 
 const { 
@@ -31,7 +32,8 @@ const {
 		DATALOADED,
 		ERROR,
 		UPDATINGDATA,
-		DATAUPDATED
+		DATAUPDATED,
+		REAUTHENTICATE
 	  } = OverlayProgressStatus
 
 const overlayContentMapper = {
@@ -39,7 +41,8 @@ const overlayContentMapper = {
 		USER_PROFILE_DATA_UPDATED: DATAUPDATED,
 		USER_PROFILE_DATA_UPDATING_ERROR: ERROR,
 		USER_PROFILE_DATA_RECEIVED: DATALOADED,
-		USER_PROFILE_DATA_RECEIVING_ERROR: ERROR
+		USER_PROFILE_DATA_RECEIVING_ERROR: ERROR,
+		USER_PROFILE_DATA_UPDATE_RE_AUTHENTICATION_REQUIRED: REAUTHENTICATE
 }
 
 class UserProfile extends React.Component{
@@ -63,9 +66,7 @@ class UserProfile extends React.Component{
 
 
 	handleUpdate = () => {
-
-		const db = this.db;
-		this.props.dispatch(profileActions.updateProfile({displayName: this.props.displayName, email: this.props.email, gender: this.props.gender, dateOfBirth: this.props.dateOfBirth, uid:this.currentUser.uid}, db));
+		this.props.dispatch(profileActions.updateProfile({displayName: this.props.displayName, email: this.props.email, gender: this.props.gender, dateOfBirth: this.props.dateOfBirth, uid:this.currentUser.uid}, firebase));
 	}
 
 	setBirthday = async () => {
@@ -176,12 +177,13 @@ class UserProfile extends React.Component{
 		//console.log('STAAAAAAAAAAAAATUSSSSSSSSSSSSSSSSS, ', this.props.stateDescription)
 		let overlayElement = <Text></Text>
 		let passingState = "DATALOADED"
-		if( !this.props.displayName && ( this.props.stateDescription === REQUESTING_USER_PROFILE_DATA || this.props.stateDescription === USER_PROFILE_DATA_RECEIVED ) ) {
+		if( this.props.stateDescription === REQUESTING_USER_PROFILE_DATA ) {
 			passingState = LOADINGDATA
 			overlayElement = <OverlayMessages stateDescription={LOADINGDATA} overlaySize={{height: this.props.layoutHeight, width: this.props.layoutWidth}}/>
 		} else if( this.props.stateDescription === USER_PROFILE_DATA_UPDATED_AND_NOTIFIED ){
 			overlayElement = <Text></Text>
 		} else if ( 
+				//this.props.stateDescription === USER_PROFILE_DATA_RECEIVED ||
 				this.props.stateDescription === UPDATING_USER_PROFILE_DATA || 
 				this.props.stateDescription === USER_PROFILE_DATA_UPDATING_ERROR || 
 				this.props.stateDescription === USER_PROFILE_DATA_UPDATED ||
@@ -189,17 +191,31 @@ class UserProfile extends React.Component{
 				) {
 			passingState = overlayContentMapper[this.props.stateDescription]
 			//overlayElement = <OverlayMessages stateDescription={}/>
-			if (this.props.stateDescription === USER_PROFILE_DATA_UPDATED || this.props.stateDescription === USER_PROFILE_DATA_RECEIVED) {
+			overlayElement = <OverlayMessages stateDescription={passingState} overlaySize={{height: this.props.layoutHeight, width: this.props.layoutWidth}}/>
+
+			if (this.props.stateDescription === USER_PROFILE_DATA_UPDATED){// || this.props.stateDescription === USER_PROFILE_DATA_RECEIVED) {
 				setTimeout(()=>{
 					this.props.dispatch(profileActions.updateNotified())
 				},2500)
-			} else if (this.props.stateDescription === USER_PROFILE_DATA_RECEIVING_ERROR ) {
+			} else if (this.props.stateDescription === USER_PROFILE_DATA_RECEIVING_ERROR && this.props.stateDescription === USER_PROFILE_DATA_UPDATING_ERROR) {
 				setTimeout(()=>{
 					this.handleClose()
 				},2500)
 			}
+		} else if(this.props.stateDescription === USER_PROFILE_DATA_UPDATE_RE_AUTHENTICATION_REQUIRED) {
+
+			passingState = overlayContentMapper[USER_PROFILE_DATA_UPDATE_RE_AUTHENTICATION_REQUIRED]
+
 			overlayElement = <OverlayMessages stateDescription={passingState} overlaySize={{height: this.props.layoutHeight, width: this.props.layoutWidth}}/>
-		}  
+
+			setTimeout(()=>{
+					this.props.navigator.popToRoot({
+					  animated: true, // does the popToRoot have transition animation or does it happen immediately (optional)
+					  animationType: 'slide-horizontal', // 'fade' (for both) / 'slide-horizontal' (for android) does the popToRoot have different transition animation (optional)
+					});
+				},2500)
+			
+		}
 
 		
 		if( this.props.gender !== "Gender" ){
@@ -317,7 +333,8 @@ const styles = StyleSheet.create({
 	profileContainer: {
 		backgroundColor: ContainerProperties.backgroundColor,
 		padding:10,
-		zIndex: 1
+		zIndex: 1,
+
 	},
 	profileImage: {
 		backgroundColor: 'yellow',
@@ -327,6 +344,7 @@ const styles = StyleSheet.create({
 	},
 	profileData: {
 		backgroundColor: ContainerProperties.backgroundColor,
+		marginBottom:15
 	},
 	profileName: { 
 		marginTop:5,

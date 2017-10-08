@@ -13,7 +13,8 @@ const {
 		USER_PROFILE_DATA_UPDATED_AND_NOTIFIED,
 		EMPTY_USER_PROFILE_DATA_RECEIVED,
 		SET_USER_EMAIL,
-		ENABLE_UPDATE
+		ENABLE_UPDATE,
+		USER_PROFILE_DATA_UPDATE_RE_AUTHENTICATION_REQUIRED
 	  } = UserDataActionTypes
 
 const defaultState = {
@@ -63,6 +64,10 @@ export default function reducer (state = defaultState, action) {
 			break
 		}
 		case USER_PROFILE_DATA_RECEIVING_ERROR: {
+			state = {...state, stateDescription: action.type, error: action.payload}
+			break
+		}
+		case USER_PROFILE_DATA_UPDATE_RE_AUTHENTICATION_REQUIRED: {
 			state = {...state, stateDescription: action.type, error: action.payload}
 			break
 		}
