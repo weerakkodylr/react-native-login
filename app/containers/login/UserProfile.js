@@ -121,7 +121,6 @@ class UserProfile extends React.Component{
 	}
 
 	handleClose = () => {
-		console.log('close PRessed')
 		this.props.navigator.pop({
 		  animated: true, // does the pop have transition animation or does it happen immediately (optional)
 		  animationType: 'slide-horizontal', // 'fade' (for both) / 'slide-horizontal' (for android) does the pop have different transition animation (optional)
@@ -174,7 +173,6 @@ class UserProfile extends React.Component{
 			fontSize: ScaleProperties.fontSizeX,
 			color: FormElementProperties.buttonTextColor,
 		}
-		//console.log('STAAAAAAAAAAAAATUSSSSSSSSSSSSSSSSS, ', this.props.stateDescription)
 		let overlayElement = <Text></Text>
 		let passingState = "DATALOADED"
 		if( this.props.stateDescription === REQUESTING_USER_PROFILE_DATA ) {
