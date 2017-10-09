@@ -23,6 +23,7 @@ const {
 		PASSWORD_RESET_EMAIL_SENDING,
 		PASSWORD_RESET_EMAIL_SENT,
 		PASSWORD_RESET_EMAIL_SENDING_ERROR,
+		USER_ACCOUNT_CREATING_PASSWORD_LENGTH_ERROR,
 	  } = UserLoginActionTypes
 
 const defaultState = {
@@ -121,6 +122,10 @@ export default function reducer (state = defaultState, action) {
 		}
 		case PASSWORD_RESET_EMAIL_SENDING_ERROR : {
 			state = { ...state, stateDescription: action.type, error: action.payload }
+			break
+		}
+		case USER_ACCOUNT_CREATING_PASSWORD_LENGTH_ERROR : {
+			state = { ...state, stateDescription: action.type }
 			break
 		}
 	}

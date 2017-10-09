@@ -14,7 +14,8 @@ const {
 	USER_ACCOUNT_CREATING,
 	PASSWORD_RESET_EMAIL_SENDING,
 	PASSWORD_RESET_EMAIL_SENT,
-	PASSWORD_RESET_EMAIL_SENDING_ERROR 
+	PASSWORD_RESET_EMAIL_SENDING_ERROR,
+	USER_ACCOUNT_CREATING_PASSWORD_LENGTH_ERROR
 } = UserLoginActionTypes
 
 class Login extends React.Component{
@@ -262,8 +263,8 @@ class Login extends React.Component{
 								</TextInput>
 							</View> 
 
-		console.log("CURRRRRRRRRENT STATUSSSSSSSSSS, ", this.props.stateDescription)
-		if(this.props.stateDescription === AUTHENTICATING || this.props.stateDescription === USER_ACCOUNT_CREATING || this.props.stateDescription === PASSWORD_RESET_EMAIL_SENDING){
+		
+		if(this.props.stateDescription === AUTHENTICATING || this.props.stateDescription === USER_ACCOUNT_CREATING || this.props.stateDescription === PASSWORD_RESET_EMAIL_SENDING || this.props.stateDescription === USER_ACCOUNT_CREATING_PASSWORD_LENGTH_ERROR){
 
 			this.props.navigator.push({
   				screen: 'FBLogin.LoginProgress',
@@ -306,7 +307,7 @@ class Login extends React.Component{
 					{loginLogo}
 					<View style={styles.inputContainer}>
 						<TextInput 
-							onLayout={(event)=>{console.log("CCCCCCCCCCCCCCCCCCCCCCCCCC",event.nativeEvent.layout.width)}}  
+							onLayout={(event)=>{console.log("Layout Width",event.nativeEvent.layout.width)}}  
 							selectionColor={FormElementProperties.textInputSelectionColor} 
 							underlineColorAndroid={FormElementProperties.textInputSelectionColor} 
 							onChangeText={this.handleEmailInput.bind(this)} style={styles.loginText} 

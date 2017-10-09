@@ -25,6 +25,7 @@ const {
 		PASSWORD_RESET_EMAIL_SENDING,
 		PASSWORD_RESET_EMAIL_SENT,
 		PASSWORD_RESET_EMAIL_SENDING_ERROR,
+		USER_ACCOUNT_CREATING_PASSWORD_LENGTH_ERROR
 	  } = UserLoginActionTypes
 
 export function inputEmail(email){
@@ -50,7 +51,6 @@ export function reSendVarification(firebase){
 		const currentUser = firebase.auth().currentUser;
 		currentUser.sendEmailVerification().then(function() {
 		  	// Email sent.
-		  	console.log("Resending the email to " + currentUser.email)
 		  	dispatch({ 
 		  		type: RESENT_VARIFICATION 
 		  	});
@@ -65,7 +65,6 @@ export function logOut(firebase){
 		});
 		firebase.auth().signOut().then(function() {
 			// Sign-out successful.
-			console.log("LOgging Out user")
 			dispatch({
 				type: USER_LOGGED_OUT
 			});
@@ -84,23 +83,30 @@ export function createAccount(email,password,firebase){
 		dispatch({
 			type: USER_ACCOUNT_CREATING
 		})
+
+		if(password.length >= 6) {
 		
-		firebase.auth().createUserWithEmailAndPassword(email, password)
-	  	.then(() => {
-	  		const currentUser = firebase.auth().currentUser;
-	  		currentUser.sendEmailVerification().then(function() {
-				dispatch({
-					type: USER_ACCOUNT_CREATED, 
-					payload: firebase.auth().currentUser
-				});
-			}) 		
-	  	}).catch((error) => {
-		  dispatch({
-		  	type: USER_ACCOUNT_CREATION_ERROR, 
-		  	payload: error
-		  });
-		});
-		  
+			firebase.auth().createUserWithEmailAndPassword(email, password)
+		  	.then(() => {
+		  		const currentUser = firebase.auth().currentUser;
+		  		currentUser.sendEmailVerification().then(function() {
+					dispatch({
+						type: USER_ACCOUNT_CREATED, 
+						payload: firebase.auth().currentUser
+					});
+				}) 		
+		  	}).catch((error) => {
+		  		console.log(error)
+			  dispatch({
+			  	type: USER_ACCOUNT_CREATION_ERROR, 
+			  	payload: error
+			  });
+			});
+		} else {
+			dispatch({
+				type: USER_ACCOUNT_CREATING_PASSWORD_LENGTH_ERROR
+			})
+		}
 	}
 }
 

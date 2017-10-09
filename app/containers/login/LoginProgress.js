@@ -31,6 +31,7 @@ const {
 		PASSWORD_RESET_EMAIL_SENDING,
 		PASSWORD_RESET_EMAIL_SENT,
 		PASSWORD_RESET_EMAIL_SENDING_ERROR,
+		USER_ACCOUNT_CREATING_PASSWORD_LENGTH_ERROR,
 	  } = UserLoginActionTypes
 
 class LoginProgress extends React.Component{
@@ -81,7 +82,7 @@ class LoginProgress extends React.Component{
 
 	render(){
 
-		console.log("CURRENT STATSUSSSSSSSSSSSSSSSSSSSS-", this.props.stateDescription)
+		console.log("CURRENT STATSUS -", this.props.stateDescription)
 		let screenContent = {};
 		let loadingMessage = <Text style={styles.loadingText}></Text>
 		let animatingStatus = false;
@@ -218,6 +219,17 @@ class LoginProgress extends React.Component{
 		} else if ( this.props.stateDescription === PASSWORD_RESET_EMAIL_SENDING_ERROR ) {
 			loadingMessage = <View>
 								<Text style={styles.loadingText}>Error occured when sending password reset link to your email address.</Text>
+								<Button 
+									buttonStyle={{alignSelf:'stretch'}}
+									isDisabled={false}
+									buttonText={"Back"} 
+									eventHandler={this.goBackToLogin.bind(this)}>
+								</Button>
+							</View>
+  			animatingStatus = false;
+		} else if (this.props.stateDescription === USER_ACCOUNT_CREATING_PASSWORD_LENGTH_ERROR) {
+			loadingMessage = <View>
+								<Text style={styles.loadingText}>Minimum password charactor length allowed is 6.</Text>
 								<Button 
 									buttonStyle={{alignSelf:'stretch'}}
 									isDisabled={false}
